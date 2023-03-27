@@ -254,7 +254,8 @@ Widget getErrorMessage(BuildContext context, e) {
   return Center(
     child: Text(
       e is FirebaseException ? e.message ?? e.code : e,
-      style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.red),
+      style:
+          Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.red),
       textAlign: TextAlign.center,
     ),
   );
@@ -291,9 +292,10 @@ Shimmer shimmerTableEffect() {
     baseColor: Colors.grey[300]!,
     highlightColor: Colors.grey[100]!,
     child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40.0) +
-          const EdgeInsets.only(top: 100.0, bottom: 50),
+      padding: const EdgeInsets.all(5),
       child: ListView.separated(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
         itemCount: 20,
         separatorBuilder: (BuildContext context, int index) {
           return const Divider(
@@ -306,7 +308,7 @@ Shimmer shimmerTableEffect() {
         itemBuilder: (BuildContext context, int index) {
           return const Card(
             child: SizedBox(
-              height: 40,
+              height: 80,
             ),
           );
         },

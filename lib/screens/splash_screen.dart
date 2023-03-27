@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+
 import '../constants/app_images.dart';
-import 'auth_handler.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -13,16 +13,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
-      Future.delayed(
-        const Duration(seconds: 2),
-        () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AuthHandler()));
-        },
-      );
-    });
   }
 
   @override

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../constants/app_images.dart';
 import '../state/dashboard_state.dart';
-import 'home_screen.dart';
+import 'home/home_screen.dart';
 import 'notification_screen.dart';
 import 'price_screen.dart';
 import 'setting_screen.dart';

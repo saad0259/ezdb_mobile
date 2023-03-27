@@ -8,7 +8,8 @@ import '../models/user.dart';
 class AuthRepo {
   static final AuthRepo instance = AuthRepo();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final collection = FirebaseFirestore.instance.collection;
+  final CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('users');
 
   Future<void> signUp({
     required String verificationId,
@@ -27,37 +28,27 @@ class AuthRepo {
   }
 
   Future<void> checkIfPhoneExists(String phone) async {
-    final QuerySnapshot result = await collection('users').get();
+    final QuerySnapshot result = await usersCollection.get();
     final List<DocumentSnapshot> documents = result.docs;
     if (documents.any((doc) => doc['phone'] == phone)) {
       throw 'Phone number already exists';
     }
   }
 
-  Future<void> signIn({
-    required String email,
-    required String phone,
-    required String password,
-  }) async {
+  Future<void> signIn({required String phone, required String password}) async {
     try {
-      if (!(await checkIfUserExists(phone, email))) {
-        throw 'User does not exist';
-      }
+      final String email = await getEmailByPhone(phone);
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
+      log(e.message!);
+      log(e.code);
       throw e.message!;
     }
   }
 
-  Future<void> passwordReset(String email, String phone) async {
-    bool userExists = await checkIfUserExists(phone, email);
-    log(userExists.toString());
-    if (userExists) {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-    } else {
-      throw 'User does not exist';
-    }
+  Future<void> passwordReset(String email) async {
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
   }
 
   Future<void> createNewUser(
@@ -65,32 +56,39 @@ class AuthRepo {
       required String phone,
       required String email,
       required String password}) async {
-    await collection('users').add({
+    final String userId = FirebaseAuth.instance.currentUser!.uid;
+    await usersCollection.doc(userId).set({
       'name': name,
       'phone': phone,
       'email': email,
+      'memberShipExpiry': DateTime.now().add(const Duration(days: 30)),
+      'memberShipStart': FieldValue.serverTimestamp(),
     });
   }
 
-  Future<bool> checkIfUserExists(String phone, String email) async {
-    log('checking $phone $email');
-    final QuerySnapshot result = await collection('users').get();
+  Future<String> getEmailByPhone(String phone) async {
+    final QuerySnapshot result =
+        await usersCollection.where('phone', isEqualTo: phone).get();
     final List<DocumentSnapshot> documents = result.docs;
-    return documents
-        .any((doc) => doc['phone'] == phone && doc['email'] == email);
+    if (documents.isEmpty) {
+      throw 'User not found';
+    }
+    //check if user's memberShipExpiry is not expired
+    final DateTime memberShipExpiry =
+        (documents.first['memberShipExpiry'] as Timestamp).toDate();
+    if (memberShipExpiry.isBefore(DateTime.now())) {
+      throw 'Your membership has expired';
+    }
+    return documents.first['email'];
   }
 
   Future<void> signOut() async {
     return await _firebaseAuth.signOut();
   }
 
-  Future<User?> getCurrentUser() async {
-    return _firebaseAuth.currentUser;
-  }
-
   Future<UserModel> getUser() async {
     final String email = FirebaseAuth.instance.currentUser?.email ?? '';
-    final QuerySnapshot result = await collection('users').get();
+    final QuerySnapshot result = await usersCollection.get();
     final List<DocumentSnapshot> documents = result.docs;
     final DocumentSnapshot user = documents.firstWhere(
       (doc) => doc['email'] == email,

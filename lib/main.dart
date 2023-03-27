@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'app_theme.dart';
 import 'firebase_options.dart';
+import 'screens/auth_handler.dart';
 import 'screens/dashboard.dart';
 import 'state/dashboard_state.dart';
 import 'state/general_state.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         theme: getTheme(),
         debugShowCheckedModeBanner: false,
-        home: SplashScreen(),
+        home: AuthHandler(),
       ),
     );
   }

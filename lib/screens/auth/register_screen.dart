@@ -25,10 +25,10 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      _name = 'John Doe';
-      _phoneNumber = '+60123456789';
-      _email = 'saad259@yopmail.com';
-      _password = '12345678';
+      _name = 'Saad';
+      _phoneNumber = '923136015054';
+      _email = 'saad.mega@yopmail.com';
+      _password = 'Lahore123@';
     }
     return SafeArea(
       child: Scaffold(
@@ -71,16 +71,16 @@ class RegisterScreen extends StatelessWidget {
                       FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                       LengthLimitingTextInputFormatter(11),
                     ],
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter phone number';
-                      } else if (value.length < 11) {
-                        return 'Please enter valid phone number';
-                      } else if (!value.startsWith('60')) {
-                        return 'Please enter valid phone number';
-                      }
-                      return null;
-                    },
+                    // validator: (String? value) {
+                    //   if (value == null || value.isEmpty) {
+                    //     return 'Please enter phone number';
+                    //   } else if (value.length < 11) {
+                    //     return 'Please enter valid phone number';
+                    //   } else if (!value.startsWith('60')) {
+                    //     return 'Please enter valid phone number';
+                    //   }
+                    //   return null;
+                    // },
                     decoration: const InputDecoration(
                       labelText: '60 10-123 1234',
                       prefixIcon: Icon(Icons.phone_outlined),

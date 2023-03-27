@@ -9,24 +9,23 @@ import '../../constants/app_images.dart';
 import '../../repo/auth_repo.dart';
 import '../../state/general_state.dart';
 import '../../utils/snippet.dart';
+import 'forgot_password_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
   String _phoneNumber = '';
-  String _email = '';
   String _password = '';
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    // if (kDebugMode) {
-    //   _phoneNumber = '+60123456789';
-    //   _email = 'saad259@yopmail.com';
-    //   _password = '123456789';
-    // }
+    if (kDebugMode) {
+      _phoneNumber = '60101231234';
+      _password = 'Lahore123@';
+    }
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -61,6 +60,7 @@ class LoginScreen extends StatelessWidget {
                       }
                       return null;
                     },
+                    initialValue: _phoneNumber,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                       LengthLimitingTextInputFormatter(11),
@@ -70,17 +70,7 @@ class LoginScreen extends StatelessWidget {
                       prefixIcon: Icon(Icons.phone_outlined),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    initialValue: _email,
-                    keyboardType: TextInputType.emailAddress,
-                    onSaved: (value) => _email = value ?? '',
-                    validator: emailValidator,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email_outlined),
-                    ),
-                  ),
+
                   const SizedBox(height: 20),
                   TextFormField(
                     initialValue: _password,
@@ -123,7 +113,7 @@ class LoginScreen extends StatelessWidget {
                                         _formKey.currentState?.save();
                                         state.setLoading(true);
                                         await AuthRepo.instance.signIn(
-                                            email: _email,
+                                            // email: _email,
                                             phone: _phoneNumber,
                                             password: _password);
                                         if (context.mounted) {
@@ -157,93 +147,6 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class ForgotPasswordWidget extends StatelessWidget {
-  ForgotPasswordWidget({
-    super.key,
-  });
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _email = '';
-  String _phone = '';
-  @override
-  Widget build(BuildContext context) {
-    if (kDebugMode) {
-      _email = 'saad259@yopmail.com';
-      _phone = '+60123456789';
-    }
-    return AlertDialog(
-      title: const Center(child: Text('Forgot Password')),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-                'Enter your email to receive a link to reset your password.'),
-            const SizedBox(height: 20),
-            TextFormField(
-              initialValue: _email,
-              keyboardType: TextInputType.emailAddress,
-              onSaved: (value) => _email = value ?? '',
-              validator: emailValidator,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                prefixIcon: Icon(Icons.email),
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              initialValue: _phone,
-              keyboardType: TextInputType.emailAddress,
-              onSaved: (value) => _phone = '+$value',
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter phone number';
-                } else if (value.length < 11) {
-                  return 'Please enter valid phone number';
-                } else if (!value.startsWith('60')) {
-                  return 'Please enter valid phone number';
-                }
-                return null;
-              },
-              inputFormatters: [
-                FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(11),
-              ],
-              decoration: const InputDecoration(
-                labelText: 'Phone',
-                prefixIcon: Icon(Icons.phone),
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                _formKey.currentState?.validate();
-                _formKey.currentState?.save();
-                getStickyLoader(context);
-                try {
-                  await AuthRepo.instance.passwordReset(_email, _phone);
-
-                  if (context.mounted) {
-                    snack(context, 'Password reset link sent to your email');
-                  }
-                } catch (e) {
-                  snack(context, e.toString());
-                }
-
-                if (context.mounted) {
-                  pop(context);
-                  pop(context);
-                }
-              },
-              child: const Text('Send'),
-            ),
-          ],
         ),
       ),
     );

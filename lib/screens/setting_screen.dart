@@ -1,15 +1,22 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../models/user.dart';
 import '../repo/auth_repo.dart';
+import '../state/dashboard_state.dart';
+import '../state/home_state.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final DashboardState dashboardState =
+        Provider.of<DashboardState>(context, listen: false);
+    final HomeState homeState = Provider.of<HomeState>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(18.0),
       child: Column(
@@ -24,9 +31,18 @@ class SettingScreen extends StatelessWidget {
                 return const Text('Error');
               } else {
                 final UserModel user = snapshot.data;
-                return Text(
-                  'Hello ${user.name}',
-                  style: Theme.of(context).textTheme.titleLarge,
+                return Column(
+                  children: [
+                    Text(
+                      'Hello ${user.name}',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 18),
+                    Text(
+                      'Your membership will expire on ${DateFormat('dd MMM yyyy').format(user.memberShipExpiry.toDate())}',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ],
                 );
               }
             },
@@ -119,7 +135,11 @@ class SettingScreen extends StatelessWidget {
               Icons.arrow_circle_right_outlined,
               color: Theme.of(context).colorScheme.primary,
             ),
-            onTap: () => AuthRepo.instance.signOut(),
+            onTap: () {
+              AuthRepo.instance.signOut();
+              dashboardState.reset();
+              homeState.reset();
+            },
           ),
           const SizedBox(height: 18),
         ],
