@@ -1,15 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:mega_petertan343/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'app_theme.dart';
 import 'firebase_options.dart';
 import 'screens/auth_handler.dart';
-import 'screens/dashboard.dart';
 import 'state/dashboard_state.dart';
 import 'state/general_state.dart';
 import 'state/home_state.dart';
+import 'state/offer_state.dart';
 import 'state/otp_state.dart';
 
 void main() async {
@@ -32,6 +31,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => OtpState()),
         ChangeNotifierProvider(create: (_) => DashboardState()),
         ChangeNotifierProvider(create: (_) => HomeState()),
+        ChangeNotifierProvider(create: (_) => OfferState()),
       ],
       child: MaterialApp(
         theme: getTheme(),

@@ -15,14 +15,17 @@ class MemberRepo {
     required String searchType,
     required String searchValue,
     required String searchBy,
+    String? postcode,
     required int limit,
     required int offset,
   }) async {
     try {
       final response = await Request(
-              '/users?searchType=$searchType&searchValue=$searchValue&userId=$searchBy&limit=$limit&offset=$offset',
+              '/users?searchType=$searchType&searchValue=$searchValue&userId=$searchBy&limit=$limit&offset=$offset${postcode != null ? '&postcode=$postcode' : ''}',
               null)
           .get(_baseUrl);
+
+      log('Request: ${'/users?searchType=$searchType&searchValue=$searchValue&userId=$searchBy&limit=$limit&offset=$offset${postcode != null ? '&postcode=$postcode' : ''}'}');
 
       if (response.statusCode == 200) {
         final data = response.data;

@@ -37,6 +37,10 @@ class MemberDetailsDialog extends StatelessWidget {
               value: member.address,
             ),
             DetailItem(
+              title: 'Postcode',
+              value: member.postcode,
+            ),
+            DetailItem(
               title: 'Tel 1',
               value: member.tel1,
             ),

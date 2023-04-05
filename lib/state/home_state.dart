@@ -15,7 +15,6 @@ class HomeState extends ChangeNotifier {
   int get currentPage => _currentPage;
   set currentPage(int value) {
     _currentPage = value;
-    log('currentPage: $value');
     notifyListeners();
   }
 
@@ -40,6 +39,7 @@ class HomeState extends ChangeNotifier {
 
   SearchType searchType = SearchType.name;
   String searchValue = '';
+  String postcode = '';
 
   List<MemberModel> _members = [];
   List<MemberModel> get members => _members;
@@ -51,18 +51,30 @@ class HomeState extends ChangeNotifier {
 
   void setSearchType(SearchType value) {
     searchType = value;
+    members = [];
+    currentPage = 0;
+    searchValue = '';
+    postcode = '';
+    dataCount = 0;
     notifyListeners();
   }
 
-  Future<void> searchMembers() async {
-    isLoading = true;
+  Future<List<MemberModel>> searchMembers() async {
+    final PaginatedMemberModel paginatedMembersData = PaginatedMemberModel(
+      members: [],
+      count: 0,
+    );
 
     try {
+      if (searchValue.isEmpty) {
+        return [];
+      }
       final String uesrId = FirebaseAuth.instance.currentUser!.uid;
 
       final PaginatedMemberModel paginatedMembersData =
           await MemberRepo.instance.getMembers(
         searchBy: uesrId,
+        postcode: searchType == SearchType.address ? postcode : null,
         searchType: searchType.name.toLowerCase(),
         searchValue: searchValue,
         limit: pageSize,
@@ -71,10 +83,14 @@ class HomeState extends ChangeNotifier {
 
       this.members = paginatedMembersData.members;
       this.dataCount = paginatedMembersData.count;
+      return paginatedMembersData.members;
     } catch (e) {
-      // log('search error: $e');
+      log('search error: $e');
+      if (e.toString().contains('invalid status code of 500')) {
+        await searchMembers();
+      }
     }
-    isLoading = false;
+    return paginatedMembersData.members;
   }
 
   reset() {

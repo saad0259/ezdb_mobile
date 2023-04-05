@@ -1,83 +1,178 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants/enums.dart';
+import '../../models/member.dart';
 import '../../state/home_state.dart';
 import '../../utils/snippet.dart';
 import 'member_list.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
   static const routeName = '/';
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final PagingController<int, MemberModel> _pagingController =
+      PagingController(firstPageKey: 0);
+
+  @override
+  void initState() {
+    super.initState();
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {});
+  }
+
+  Future<void> _fetchPage(int pageKey) async {
+    log('pageKey: $pageKey');
+    try {
+      final HomeState homeState =
+          Provider.of<HomeState>(context, listen: false);
+      homeState.currentPage = pageKey;
+      final List<MemberModel> newItems = await homeState.searchMembers();
+
+      final isLastPage = newItems.length < homeState.currentPage;
+      if (isLastPage) {
+        _pagingController.appendLastPage(newItems);
+      } else {
+        final nextPageKey = pageKey + 1;
+        _pagingController.appendPage(newItems, nextPageKey);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+
+  final ScrollController _scrollController = ScrollController();
+
+  @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    // final NumberPaginatorController _controller = NumberPaginatorController();
     return Padding(
-      padding: const EdgeInsets.all(30.0),
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 0),
       child: SingleChildScrollView(
+        controller: _scrollController,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SearchForm(),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Search Result:',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
+            SizedBox(
+              // height: screenHeight * 0.5,
+              child: Column(
+                children: [
+                  SearchForm(controller: _pagingController),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Search Result:',
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                ),
                       ),
-                ),
-                Consumer<HomeState>(
-                  builder: (context, homeState, child) {
-                    return Text(
-                      '${homeState.dataCount} records found',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey,
-                          ),
-                    );
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Consumer<HomeState>(
-              builder: (context, homeState, child) {
-                return homeState.members.isNotEmpty
-                    ? NumberPaginator(
-                        numberPages: homeState.dataCount ~/ homeState.pageSize,
-                        initialPage: homeState.currentPage,
-                        config: NumberPaginatorUIConfig(
-                          mode: ContentDisplayMode.dropdown,
-                        ),
-                        onPageChange: (value) {
-                          homeState.currentPage = value;
-                          homeState.searchMembers();
+                      Consumer<HomeState>(
+                        builder: (context, homeState, child) {
+                          return Text(
+                            '${homeState.dataCount} records found',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
+                                ),
+                          );
                         },
-                      )
-                    : SizedBox();
-              },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
             ),
-            const SizedBox(height: 10),
+            // Consumer<HomeState>(
+            //   builder: (context, homeState, child) {
+            //     log('curentPage in view: ${homeState.currentPage}');
+            //     return homeState.members.isNotEmpty
+            //         ? NumberPaginator(
+            //             numberPages: homeState.dataCount ~/ homeState.pageSize,
+            //             initialPage: homeState.currentPage,
+            //             controller: _controller,
+            //             config: NumberPaginatorUIConfig(
+            //               mode: ContentDisplayMode.dropdown,
+            //             ),
+            //             onPageChange: (value) {
+            //               homeState.currentPage = value;
+            //               homeState.searchMembers();
+            //             },
+            //           )
+            //         : SizedBox();
+            //   },
+            // ),
+            // const SizedBox(height: 10),
+            // if (_pagingController.itemList != null)
             Consumer<HomeState>(
               builder: (context, homeState, child) {
-                if (homeState.isLoading) {
-                  return shimmerTableEffect();
-                } else if (homeState.members.isEmpty) {
-                  return const Center(
-                    child: Text('No data found'),
-                  );
-                } else {
-                  return MembersList(homeState: homeState);
-                }
+                return homeState.isLoading
+                    ? shimmerTableEffect()
+                    : homeState.members.isEmpty
+                        ? const Center(
+                            child: Text('No data found'),
+                          )
+                        : SizedBox(
+                            height: screenHeight * 0.4,
+                            child: PagedListView<int, MemberModel>.separated(
+                              pagingController: _pagingController,
+                              shrinkWrap: true,
+                              // physics: const NeverScrollableScrollPhysics(),
+                              // scrollController: _scrollController,
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(
+                                height: 10,
+                              ),
+                              // physics: const NeverScrollableScrollPhysics(),
+                              builderDelegate:
+                                  PagedChildBuilderDelegate<MemberModel>(
+                                itemBuilder: (context, item, index) =>
+                                    MemberWidget(
+                                  member: item,
+                                ),
+                              ),
+                            ),
+                          );
               },
-            )
+            ),
+            // Consumer<HomeState>(
+            //   builder: (context, homeState, child) {
+            //     if (homeState.isLoading) {
+            //       return shimmerTableEffect();
+            //     } else if (homeState.members.isEmpty) {
+            //       return const Center(
+            //         child: Text('No data found'),
+            //       );
+            //     } else {
+            //       return MembersList(homeState: homeState);
+            //     }
+            //   },
+            // )
           ],
         ),
       ),
@@ -86,15 +181,20 @@ class HomeScreen extends StatelessWidget {
 }
 
 class SearchForm extends StatelessWidget {
-  SearchForm({super.key});
+  SearchForm({
+    Key? key,
+    required this.controller,
+  }) : super(key: key);
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController searchController = TextEditingController();
-
+  final TextEditingController postcodeController = TextEditingController();
+  final PagingController<int, MemberModel> controller;
   @override
   Widget build(BuildContext context) {
     final HomeState homeState = Provider.of<HomeState>(context);
     searchController.text = homeState.searchValue;
+    postcodeController.text = homeState.postcode;
 
     return Card(
       color: Colors.grey.shade300,
@@ -154,16 +254,55 @@ class SearchForm extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
+                if (homeState.searchType == SearchType.address)
+                  TextFormField(
+                    controller: postcodeController,
+                    validator: mandatoryValidator,
+                    onChanged: (value) {
+                      homeState.postcode = value;
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'Postcode',
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     //close keypad
                     FocusScope.of(context).unfocus();
-
                     if (formKey.currentState?.validate() ?? false) {
-                      homeState.searchValue = searchController.text;
-                      homeState.currentPage = 0;
-                      homeState.searchMembers();
+                      homeState.isLoading = true;
+                      try {
+                        final HomeState homeState =
+                            Provider.of<HomeState>(context, listen: false);
+                        homeState.currentPage = 0;
+                        final List<MemberModel> newItems =
+                            await homeState.searchMembers();
+
+                        final isLastPage =
+                            newItems.length < homeState.currentPage;
+                        if (isLastPage) {
+                          controller.appendLastPage(newItems);
+                        } else {
+                          final nextPageKey = 1;
+                          controller.appendPage(newItems, nextPageKey);
+                        }
+                      } catch (error) {
+                        controller.error = error;
+                      }
+                      homeState.isLoading = false;
                     }
+                    //   homeState.searchValue = searchController.text;
+                    //   homeState.currentPage = 0;
+                    //   homeState.searchMembers();
+                    //   // await controller.navigateToPage(0);
                   },
                   child: const Text('Search'),
                 ),

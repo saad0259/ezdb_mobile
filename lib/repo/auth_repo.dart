@@ -63,6 +63,8 @@ class AuthRepo {
       'email': email,
       'memberShipExpiry': DateTime.now().add(const Duration(days: 30)),
       'memberShipStart': FieldValue.serverTimestamp(),
+      'createdAt': FieldValue.serverTimestamp(),
+      'isBlocked': false,
     });
   }
 
@@ -78,6 +80,8 @@ class AuthRepo {
         (documents.first['memberShipExpiry'] as Timestamp).toDate();
     if (memberShipExpiry.isBefore(DateTime.now())) {
       throw 'Your membership has expired';
+    } else if ((documents.first['isBlocked'] ?? false) == true) {
+      throw 'Your account has been blocked';
     }
     return documents.first['email'];
   }

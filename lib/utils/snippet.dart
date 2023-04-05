@@ -1,4 +1,5 @@
-import 'dart:math';
+import 'dart:developer';
+import 'dart:math' as math;
 
 // import 'package:beamer/beamer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 // import 'package:image_picker/image_picker.dart';
-// import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 String get placesApiKey => 'AIzaSyDK80tNhh90sMf5VFouxEfPSYPDULvdB2Q';
 
@@ -31,7 +32,7 @@ String? Function(String?) get numberValidator =>
             : "Enter a valid number";
 
 String getRandomNumber() {
-  var rng = Random();
+  var rng = math.Random();
 
   return (rng.nextInt(90000) + 10000).toString();
 }
@@ -457,11 +458,12 @@ Future<String?> alertInput(BuildContext context, String title, String hint,
   );
 }
 
-// Future<void> customLaunch(String path) async {
-//   final Uri url = Uri.parse(path);
-//   if (await canLaunchUrl(url)) {
-//     await launchUrl(url);
-//   } else {
-//     debugPrint(' could not launch $url');
-//   }
-// }
+Future<void> customLaunch(String path) async {
+  final Uri url = Uri.parse(path);
+  if (await canLaunchUrl(url)) {
+    await launchUrl(url);
+  } else {
+    log(' could not launch $url');
+    throw 'Failed to launch';
+  }
+}
