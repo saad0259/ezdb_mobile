@@ -15,12 +15,6 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
-  final List<PriceItem> _priceItems = [
-    PriceItem(price: 200, days: 30),
-    PriceItem(price: 500, days: 90),
-    PriceItem(price: 750, days: 120),
-  ];
-
   @override
   void initState() {
     super.initState();

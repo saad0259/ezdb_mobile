@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:number_paginator/number_paginator.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants/enums.dart';
@@ -29,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _pagingController.addPageRequestListener((pageKey) {
       _fetchPage(pageKey);
     });
-    // WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   Future<void> _fetchPage(int pageKey) async {
@@ -62,8 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    // final NumberPaginatorController _controller = NumberPaginatorController();
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 0),
       child: SingleChildScrollView(
@@ -108,27 +104,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            // Consumer<HomeState>(
-            //   builder: (context, homeState, child) {
-            //     log('curentPage in view: ${homeState.currentPage}');
-            //     return homeState.members.isNotEmpty
-            //         ? NumberPaginator(
-            //             numberPages: homeState.dataCount ~/ homeState.pageSize,
-            //             initialPage: homeState.currentPage,
-            //             controller: _controller,
-            //             config: NumberPaginatorUIConfig(
-            //               mode: ContentDisplayMode.dropdown,
-            //             ),
-            //             onPageChange: (value) {
-            //               homeState.currentPage = value;
-            //               homeState.searchMembers();
-            //             },
-            //           )
-            //         : SizedBox();
-            //   },
-            // ),
-            // const SizedBox(height: 10),
-            // if (_pagingController.itemList != null)
             Consumer<HomeState>(
               builder: (context, homeState, child) {
                 return homeState.isLoading
@@ -137,42 +112,27 @@ class _HomeScreenState extends State<HomeScreen> {
                         ? const Center(
                             child: Text('No data found'),
                           )
-                        : SizedBox(
-                            height: screenHeight * 0.4,
-                            child: PagedListView<int, MemberModel>.separated(
-                              pagingController: _pagingController,
-                              shrinkWrap: true,
-                              // physics: const NeverScrollableScrollPhysics(),
-                              // scrollController: _scrollController,
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(
-                                height: 10,
-                              ),
-                              // physics: const NeverScrollableScrollPhysics(),
-                              builderDelegate:
-                                  PagedChildBuilderDelegate<MemberModel>(
-                                itemBuilder: (context, item, index) =>
-                                    MemberWidget(
-                                  member: item,
-                                ),
+                        : PagedListView<int, MemberModel>.separated(
+                            scrollController: _scrollController,
+                            pagingController: _pagingController,
+                            shrinkWrap: true,
+                            // physics: const NeverScrollableScrollPhysics(),
+                            // scrollController: _scrollController,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(
+                              height: 10,
+                            ),
+                            // physics: const NeverScrollableScrollPhysics(),
+                            builderDelegate:
+                                PagedChildBuilderDelegate<MemberModel>(
+                              itemBuilder: (context, item, index) =>
+                                  MemberWidget(
+                                member: item,
                               ),
                             ),
                           );
               },
             ),
-            // Consumer<HomeState>(
-            //   builder: (context, homeState, child) {
-            //     if (homeState.isLoading) {
-            //       return shimmerTableEffect();
-            //     } else if (homeState.members.isEmpty) {
-            //       return const Center(
-            //         child: Text('No data found'),
-            //       );
-            //     } else {
-            //       return MembersList(homeState: homeState);
-            //     }
-            //   },
-            // )
           ],
         ),
       ),

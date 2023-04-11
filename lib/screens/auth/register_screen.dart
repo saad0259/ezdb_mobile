@@ -20,15 +20,15 @@ class RegisterScreen extends StatelessWidget {
   String _name = '';
   String _phoneNumber = '';
   String _email = '';
-  String _password = '';
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
       _name = 'Saad';
-      _phoneNumber = '923136015054';
+      _phoneNumber = '60101231233';
       _email = 'saad.mega@yopmail.com';
-      _password = 'Lahore123@';
+      // _passwordController.text = 'Lahore123@';
     }
     return SafeArea(
       child: Scaffold(
@@ -100,9 +100,9 @@ class RegisterScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
-                    initialValue: _password,
+                    controller: _passwordController,
                     onSaved: (value) {
-                      _password = value!;
+                      _passwordController.text = value!;
                     },
                     validator: passwordValidator,
                     obscureText: true,
@@ -113,9 +113,11 @@ class RegisterScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   TextFormField(
-                    initialValue: _password,
+                    initialValue: _passwordController.text,
                     validator: (value) {
-                      if (value != _password) {
+                      if (value != _passwordController.text) {
+                        log('password : $_passwordController.text');
+                        log('confirm password : $value');
                         return 'Password does not match';
                       }
                       return null;
@@ -190,7 +192,7 @@ class RegisterScreen extends StatelessWidget {
             OtpScreen(
               phoneNumber: _phoneNumber,
               email: _email,
-              password: _password,
+              password: _passwordController.text,
               verificationId: verificationId,
               name: _name,
               phone: _phoneNumber,

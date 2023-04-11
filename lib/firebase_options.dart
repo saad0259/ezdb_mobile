@@ -47,30 +47,30 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCgbQZHQ-OSq1lar2QZV9syb84zf213PF4',
-    appId: '1:76249013032:web:52095359e712b54c33ce1d',
-    messagingSenderId: '76249013032',
-    projectId: 'mega-petertan343',
-    authDomain: 'mega-petertan343.firebaseapp.com',
-    storageBucket: 'mega-petertan343.appspot.com',
-    measurementId: 'G-95VMLCSY1S',
+    apiKey: 'AIzaSyDzlbsnYJZlITiUH9poONtM1ON9UD0J9VA',
+    appId: '1:181211131869:web:f09851d24be9e9abb65034',
+    messagingSenderId: '181211131869',
+    projectId: 'mega-app-1ea75',
+    authDomain: 'mega-app-1ea75.firebaseapp.com',
+    storageBucket: 'mega-app-1ea75.appspot.com',
+    measurementId: 'G-9D8T0XB6SJ',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBP0KypRaQPAuwKM8fnaMiJLLmEhqGc_UU',
-    appId: '1:76249013032:android:0b7d3839eab0f06c33ce1d',
-    messagingSenderId: '76249013032',
-    projectId: 'mega-petertan343',
-    storageBucket: 'mega-petertan343.appspot.com',
+    apiKey: 'AIzaSyB5a-JMQ4oOqrxlYqXheUU0WYJCKPz7-oc',
+    appId: '1:181211131869:android:fc6c519021f0217bb65034',
+    messagingSenderId: '181211131869',
+    projectId: 'mega-app-1ea75',
+    storageBucket: 'mega-app-1ea75.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDbyIiXDxBbjGJiB3L0sQipcA5YDDEHMtw',
-    appId: '1:76249013032:ios:bf9d9ab041e043ad33ce1d',
-    messagingSenderId: '76249013032',
-    projectId: 'mega-petertan343',
-    storageBucket: 'mega-petertan343.appspot.com',
-    iosClientId: '76249013032-hotcph38ko678gjhcaspal9q8i4vpho1.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCK2NT44I7ZH2PbgMWdomOJLQXLwBg_Upw',
+    appId: '1:181211131869:ios:e69fdbbd76e099f1b65034',
+    messagingSenderId: '181211131869',
+    projectId: 'mega-app-1ea75',
+    storageBucket: 'mega-app-1ea75.appspot.com',
+    iosClientId: '181211131869-vuj4jv4tgnek1v40uie6mq37g9070lfq.apps.googleusercontent.com',
     iosBundleId: 'com.example.megaPetertan343',
   );
 }
