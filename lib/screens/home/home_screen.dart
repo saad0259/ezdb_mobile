@@ -9,6 +9,7 @@ import '../../models/member.dart';
 import '../../state/home_state.dart';
 import '../../utils/snippet.dart';
 import 'member_list.dart';
+import 'search_results.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -104,35 +105,35 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            Consumer<HomeState>(
-              builder: (context, homeState, child) {
-                return homeState.isLoading
-                    ? shimmerTableEffect()
-                    : homeState.members.isEmpty
-                        ? const Center(
-                            child: Text('No data found'),
-                          )
-                        : PagedListView<int, MemberModel>.separated(
-                            scrollController: _scrollController,
-                            pagingController: _pagingController,
-                            shrinkWrap: true,
-                            // physics: const NeverScrollableScrollPhysics(),
-                            // scrollController: _scrollController,
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(
-                              height: 10,
-                            ),
-                            // physics: const NeverScrollableScrollPhysics(),
-                            builderDelegate:
-                                PagedChildBuilderDelegate<MemberModel>(
-                              itemBuilder: (context, item, index) =>
-                                  MemberWidget(
-                                member: item,
-                              ),
-                            ),
-                          );
-              },
-            ),
+            // Consumer<HomeState>(
+            //   builder: (context, homeState, child) {
+            //     return homeState.isLoading
+            //         ? shimmerTableEffect()
+            //         : homeState.members.isEmpty
+            //             ? const Center(
+            //                 child: Text('No data found'),
+            //               )
+            //             : PagedListView<int, MemberModel>.separated(
+            //                 scrollController: _scrollController,
+            //                 pagingController: _pagingController,
+            //                 shrinkWrap: true,
+            //                 // physics: const NeverScrollableScrollPhysics(),
+            //                 // scrollController: _scrollController,
+            //                 separatorBuilder: (context, index) =>
+            //                     const SizedBox(
+            //                   height: 10,
+            //                 ),
+            //                 // physics: const NeverScrollableScrollPhysics(),
+            //                 builderDelegate:
+            //                     PagedChildBuilderDelegate<MemberModel>(
+            //                   itemBuilder: (context, item, index) =>
+            //                       MemberWidget(
+            //                     member: item,
+            //                   ),
+            //                 ),
+            //               );
+            //   },
+            // ),
           ],
         ),
       ),
@@ -239,24 +240,25 @@ class SearchForm extends StatelessWidget {
                     FocusScope.of(context).unfocus();
                     if (formKey.currentState?.validate() ?? false) {
                       homeState.isLoading = true;
-                      try {
-                        final HomeState homeState =
-                            Provider.of<HomeState>(context, listen: false);
-                        homeState.currentPage = 0;
-                        final List<MemberModel> newItems =
-                            await homeState.searchMembers();
+                      push(context, SearchResultsScreen());
+                      // try {
+                      //   final HomeState homeState =
+                      //       Provider.of<HomeState>(context, listen: false);
+                      //   homeState.currentPage = 0;
+                      //   final List<MemberModel> newItems =
+                      //       await homeState.searchMembers();
 
-                        final isLastPage =
-                            newItems.length < homeState.currentPage;
-                        if (isLastPage) {
-                          controller.appendLastPage(newItems);
-                        } else {
-                          final nextPageKey = 1;
-                          controller.appendPage(newItems, nextPageKey);
-                        }
-                      } catch (error) {
-                        controller.error = error;
-                      }
+                      //   final isLastPage =
+                      //       newItems.length < homeState.currentPage;
+                      //   if (isLastPage) {
+                      //     controller.appendLastPage(newItems);
+                      //   } else {
+                      //     final nextPageKey = 1;
+                      //     controller.appendPage(newItems, nextPageKey);
+                      //   }
+                      // } catch (error) {
+                      //   controller.error = error;
+                      // }
                       homeState.isLoading = false;
                     }
                     //   homeState.searchValue = searchController.text;

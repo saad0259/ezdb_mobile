@@ -81,7 +81,7 @@ class HomeState extends ChangeNotifier {
         offset: (currentPage) * pageSize,
       );
 
-      this.members = paginatedMembersData.members;
+      this.members.addAll(paginatedMembersData.members);
       this.dataCount = paginatedMembersData.count;
       return paginatedMembersData.members;
     } catch (e) {
