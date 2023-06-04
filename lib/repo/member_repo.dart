@@ -8,7 +8,7 @@ import 'api_helper.dart';
 class MemberRepo {
   static final MemberRepo instance = MemberRepo();
 
-  String _baseUrl = 'https://mega-middleware.vercel.app/api/v1';
+  String _baseUrl = 'http://5.9.88.108:3000/api/v1';
   // String _baseUrl = 'http://10.0.2.2:5000/api/v1';
 
   Future<PaginatedMemberModel> getMembers({

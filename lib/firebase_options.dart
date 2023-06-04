@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -46,19 +49,9 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDzlbsnYJZlITiUH9poONtM1ON9UD0J9VA',
-    appId: '1:181211131869:web:f09851d24be9e9abb65034',
-    messagingSenderId: '181211131869',
-    projectId: 'mega-app-1ea75',
-    authDomain: 'mega-app-1ea75.firebaseapp.com',
-    storageBucket: 'mega-app-1ea75.appspot.com',
-    measurementId: 'G-9D8T0XB6SJ',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB5a-JMQ4oOqrxlYqXheUU0WYJCKPz7-oc',
-    appId: '1:181211131869:android:fc6c519021f0217bb65034',
+    appId: '1:181211131869:android:30182273652321e4b65034',
     messagingSenderId: '181211131869',
     projectId: 'mega-app-1ea75',
     storageBucket: 'mega-app-1ea75.appspot.com',
@@ -66,10 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCK2NT44I7ZH2PbgMWdomOJLQXLwBg_Upw',
-    appId: '1:181211131869:ios:e69fdbbd76e099f1b65034',
+    appId: '1:181211131869:ios:8032b2a68c39b349b65034',
     messagingSenderId: '181211131869',
     projectId: 'mega-app-1ea75',
     storageBucket: 'mega-app-1ea75.appspot.com',
+    androidClientId: '181211131869-9r4gkerthc6gqfnl8fvthj10br6t9s30.apps.googleusercontent.com',
     iosClientId: '181211131869-vuj4jv4tgnek1v40uie6mq37g9070lfq.apps.googleusercontent.com',
     iosBundleId: 'com.example.megaPetertan343',
   );

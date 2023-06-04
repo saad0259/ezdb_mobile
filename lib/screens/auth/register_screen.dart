@@ -26,9 +26,9 @@ class RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     if (kDebugMode) {
       _name = 'Saad';
-      _phoneNumber = '60101231233';
-      _email = 'saad.mega@yopmail.com';
-      // _passwordController.text = 'Lahore123@';
+      _phoneNumber = '60166666872';
+      _email = 'peter.mega@yopmail.com';
+      _passwordController.text = 'Lahore123@';
     }
     return SafeArea(
       child: Scaffold(

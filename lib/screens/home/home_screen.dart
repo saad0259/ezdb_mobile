@@ -8,7 +8,6 @@ import '../../constants/enums.dart';
 import '../../models/member.dart';
 import '../../state/home_state.dart';
 import '../../utils/snippet.dart';
-import 'member_list.dart';
 import 'search_results.dart';
 
 class HomeScreen extends StatefulWidget {
