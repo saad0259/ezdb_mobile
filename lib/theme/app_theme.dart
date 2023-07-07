@@ -1,31 +1,26 @@
 import 'package:flutter/material.dart';
 
+import 'input_theme.dart';
+
 ThemeData getTheme() {
   return ThemeData(
     colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xffbf1e2e),
-      primary: const Color(0xffbf1e2e),
+      seedColor: const Color(0xff8B5FBF),
+      primary: const Color(0xff8B5FBF),
     ),
+    fontFamily: 'Montserrat',
     scaffoldBackgroundColor: Colors.white,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.white,
-      foregroundColor: Colors.black,
-      titleTextStyle: TextStyle(
-        color: Colors.black,
-        fontSize: 20,
-        fontWeight: FontWeight.normal,
-      ),
-    ),
+    appBarTheme: getAppBarTheme(),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: Colors.white,
-      selectedItemColor: Color(0xffbf1e2e),
+      selectedItemColor: Color(0xff8B5FBF),
       unselectedItemColor: Colors.black,
       unselectedIconTheme: IconThemeData(
         color: Colors.black,
         size: 30,
       ),
       selectedIconTheme: IconThemeData(
-        color: Color(0xffbf1e2e),
+        color: Color(0xff8B5FBF),
         size: 30,
       ),
       selectedLabelStyle: TextStyle(
@@ -37,11 +32,7 @@ ThemeData getTheme() {
         fontWeight: FontWeight.normal,
       ),
     ),
-    inputDecorationTheme: InputDecorationTheme(
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(50),
-      ),
-    ),
+    inputDecorationTheme: getInputDecorationTheme(),
     dropdownMenuTheme: DropdownMenuThemeData(
       menuStyle: MenuStyle(
         surfaceTintColor: MaterialStateProperty.all(Colors.white),
@@ -57,13 +48,6 @@ ThemeData getTheme() {
           ),
         ),
       ),
-      inputDecorationTheme: InputDecorationTheme(
-        fillColor: Colors.white,
-        filled: true,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-      ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
@@ -71,13 +55,20 @@ ThemeData getTheme() {
           horizontal: 50,
           vertical: 20,
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-          side: const BorderSide(
-            color: Colors.black,
-          ),
-        ),
       ),
+    ),
+  );
+}
+
+AppBarTheme getAppBarTheme() {
+  return const AppBarTheme(
+    backgroundColor: Colors.white,
+    foregroundColor: Colors.black,
+    shadowColor: Colors.transparent,
+    titleTextStyle: TextStyle(
+      color: Colors.black54,
+      fontSize: 20,
+      fontWeight: FontWeight.normal,
     ),
   );
 }

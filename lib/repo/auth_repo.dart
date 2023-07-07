@@ -1,49 +1,138 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 
 import '../models/user.dart';
+import 'api_helper.dart';
 
 class AuthRepo {
   static final AuthRepo instance = AuthRepo();
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('users');
 
+  final String authPath = '/auth';
+
   Future<void> signUp({
-    required String verificationId,
-    required String code,
+    required String name,
     required String email,
+    required String phone,
     required String password,
   }) async {
     try {
-      var user = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      await user.user?.updatePhoneNumber(PhoneAuthProvider.credential(
-          verificationId: verificationId, smsCode: code));
-    } on FirebaseAuthException catch (e) {
-      throw e.message!;
+      final data = {
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'password': password,
+      };
+      final Request request = Request('${authPath}/register', data);
+      final Response response = await request.post(baseUrl);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return response.data;
+      } else {
+        throw response.data['message'];
+      }
+    } on DioError catch (e) {
+      // debugPrint(e.response?.data.toString());
+      final String errorMessage =
+          e.response?.data['message'] ?? 'Something went wrong';
+      log('Error: $errorMessage');
+
+      throw errorMessage;
+    } catch (e) {
+      log('Error: $e');
+      debugPrint(e.toString());
+      rethrow;
     }
   }
 
-  Future<void> checkIfPhoneExists(String phone) async {
-    final QuerySnapshot result = await usersCollection.get();
-    final List<DocumentSnapshot> documents = result.docs;
-    if (documents.any((doc) => doc['phone'] == phone)) {
-      throw 'Phone number already exists';
-    }
-  }
-
-  Future<void> signIn({required String phone, required String password}) async {
+  Future<UserModel?> signIn(
+      {required String phone, required String password}) async {
     try {
-      final String email = await getEmailByPhone(phone);
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch (e) {
-      log(e.message!);
-      log(e.code);
-      throw e.message!;
+      final data = {
+        'phone': phone,
+        'password': password,
+      };
+      final Request request = Request('${authPath}/login', data);
+      final Response response = await request.post(baseUrl);
+
+      if (response.statusCode == 200) {
+        final UserModel user = UserModel.fromMap(response.data['data']);
+        return user;
+      } else {
+        throw response.data['message'];
+      }
+    } on DioError catch (e) {
+      // debugPrint(e.response?.data.toString());
+      final String errorMessage =
+          e.response?.data['message'] ?? 'Something went wrong';
+      log('Error: $errorMessage');
+
+      throw errorMessage;
+    } catch (e) {
+      log('Error: $e');
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> verifyOtp(String email, String otp) async {
+    try {
+      final data = {
+        'email': email,
+        'otp': otp,
+      };
+      final Request request = Request('${authPath}/verify-otp', data);
+      final Response response = await request.post(baseUrl);
+
+      if (response.statusCode == 200) {
+        log('response: ${response.data}');
+        return response.data;
+      } else {
+        throw response.data['message'];
+      }
+    } on DioError catch (e) {
+      // debugPrint(e.response?.data.toString());
+      final String errorMessage =
+          e.response?.data['message'] ?? 'Something went wrong';
+      log('Error: $errorMessage');
+
+      throw errorMessage;
+    } catch (e) {
+      log('Error: $e');
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> resendOtp(String email) async {
+    try {
+      final data = {
+        'email': email,
+      };
+      final Request request = Request('${authPath}/resend-otp', data);
+      final Response response = await request.post(baseUrl);
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw response.data['message'];
+      }
+    } on DioError catch (e) {
+      // debugPrint(e.response?.data.toString());
+      final String errorMessage =
+          e.response?.data['message'] ?? 'Something went wrong';
+      log('Error: $errorMessage');
+
+      throw errorMessage;
+    } catch (e) {
+      log('Error: $e');
+      debugPrint(e.toString());
+      rethrow;
     }
   }
 
@@ -66,28 +155,6 @@ class AuthRepo {
       'createdAt': FieldValue.serverTimestamp(),
       'isBlocked': false,
     });
-  }
-
-  Future<String> getEmailByPhone(String phone) async {
-    final QuerySnapshot result =
-        await usersCollection.where('phone', isEqualTo: phone).get();
-    final List<DocumentSnapshot> documents = result.docs;
-    if (documents.isEmpty) {
-      throw 'User not found';
-    }
-    //check if user's memberShipExpiry is not expired
-    final DateTime memberShipExpiry =
-        (documents.first['memberShipExpiry'] as Timestamp).toDate();
-    if (memberShipExpiry.isBefore(DateTime.now())) {
-      throw 'Your membership has expired';
-    } else if ((documents.first['isBlocked'] ?? false) == true) {
-      throw 'Your account has been blocked';
-    }
-    return documents.first['email'];
-  }
-
-  Future<void> signOut() async {
-    return await _firebaseAuth.signOut();
   }
 
   Future<UserModel> getUser() async {

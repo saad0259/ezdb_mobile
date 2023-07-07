@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:mega_petertan343/screens/auth_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants/enums.dart';
@@ -8,28 +9,33 @@ import '../../repo/auth_repo.dart';
 import '../../reusables/numpad.dart';
 import '../../state/otp_state.dart';
 import '../../utils/snippet.dart';
-import '../dashboard.dart';
 
-class OtpScreen extends StatelessWidget {
-  final String verificationId;
+class OtpScreen extends StatefulWidget {
   final AuthType authType;
 
-  final String? phoneNumber;
-  final String? email;
-  final String? password;
-  final String? name;
   final String? phone;
+  final String? email;
 
   const OtpScreen({
     Key? key,
     required this.authType,
-    required this.verificationId,
-    this.phoneNumber,
-    this.email,
-    this.password,
-    this.name,
     this.phone,
+    this.email,
   }) : super(key: key);
+
+  @override
+  State<OtpScreen> createState() => _OtpScreenState();
+}
+
+class _OtpScreenState extends State<OtpScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final OtpState otpState = Provider.of<OtpState>(context, listen: false);
+      otpState.startTimer();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +50,7 @@ class OtpScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Text(
-              'Enter the 6-digit code sent to $phoneNumber',
+              'Enter the 6-digit code sent to ${widget.phone}',
               textAlign: TextAlign.center,
             ),
           ),
@@ -75,29 +81,23 @@ class OtpScreen extends StatelessWidget {
                     return NumPad(
                       isLoading: state.isLoading,
                       onUpdate: (value) {
-                        context.read<OtpState>().add(value);
+                        state.add(value);
                       },
                       onSubmit: () async {
-                        if (context.read<OtpState>().otpChars.length > 5) {
+                        if (state.otpChars.length > 5) {
                           state.isLoading = true;
 
                           try {
-                            await AuthRepo.instance.signUp(
-                              code: context.read<OtpState>().otpChars.join(),
-                              verificationId: verificationId,
-                              email: email!,
-                              password: password!,
+                            await AuthRepo.instance.verifyOtp(
+                              widget.email!,
+                              state.otpChars.join(),
                             );
+
                             if (context.mounted) {
-                              replace(context, DashboardScreen());
-                            }
-                            if (authType == AuthType.register) {
-                              await AuthRepo.instance.createNewUser(
-                                email: email!,
-                                password: password!,
-                                name: name!,
-                                phone: phone!,
-                              );
+                              snack(context,
+                                  'Otp verified successfully. Login to continue',
+                                  info: true);
+                              popAllAndGoTo(context, AuthHandler());
                             }
 
                             state.isLoading = false;
@@ -107,24 +107,77 @@ class OtpScreen extends StatelessWidget {
                             // }
                           } catch (e) {
                             state.isLoading = false;
-                            if (e
-                                .toString()
-                                .contains('The sms verification code used')) {
-                              snack(context, 'invalid otp, please try again');
-                            } else {
-                              log('not firebae error');
-                              log(e.toString());
-                              snack(context, e.toString());
-                            }
+                            log('not firebae error');
+                            log(e.toString());
+                            snack(context, e.toString());
                           }
                         }
                       },
                       onClear: () {
-                        context.read<OtpState>().clear();
+                        state.clear();
                       },
                     );
                   },
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Resend OTP in ',
+                      style: TextStyle(
+                        fontFamily: 'Bold',
+                        fontSize: 14,
+                      ),
+                    ),
+                    Consumer<OtpState>(
+                      builder: (context, state, child) {
+                        return Text(
+                          '${state.timer}',
+                          style: const TextStyle(
+                            fontFamily: 'Bold',
+                            fontSize: 14,
+                          ),
+                        );
+                      },
+                    ),
+                    const Text(
+                      ' seconds',
+                      style: TextStyle(
+                        fontFamily: 'Bold',
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+                Consumer<OtpState>(
+                  builder: (context, otpState, child) {
+                    return otpState.timer > 0
+                        ? const SizedBox(height: 30)
+                        : TextButton(
+                            onPressed: () async {
+                              try {
+                                getStickyLoader(context);
+                                await AuthRepo.instance
+                                    .resendOtp(widget.email!);
+
+                                otpState.timer = 60;
+                                otpState.startTimer();
+                                snack(context, 'Otp sent', info: true);
+                              } catch (e) {
+                                snack(context, e.toString());
+                              }
+                              pop(context);
+                            },
+                            child: const Text(
+                              'Resend OTP',
+                              style: TextStyle(
+                                fontFamily: 'Bold',
+                                fontSize: 14,
+                              ),
+                            ),
+                          );
+                  },
+                )
               ],
             ),
           )

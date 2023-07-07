@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import '../constants/enums.dart';
@@ -59,7 +58,8 @@ class HomeState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<MemberModel>> searchMembers() async {
+  Future<List<MemberModel>> searchMembers(int userId) async {
+    log('search by : ${userId}');
     final PaginatedMemberModel paginatedMembersData = PaginatedMemberModel(
       members: [],
       count: 0,
@@ -69,11 +69,10 @@ class HomeState extends ChangeNotifier {
       if (searchValue.isEmpty) {
         return [];
       }
-      final String uesrId = FirebaseAuth.instance.currentUser!.uid;
 
       final PaginatedMemberModel paginatedMembersData =
           await MemberRepo.instance.getMembers(
-        searchBy: uesrId,
+        searchBy: userId,
         postcode: searchType == SearchType.address ? postcode : null,
         searchType: searchType.name.toLowerCase(),
         searchValue: searchValue,
@@ -87,7 +86,7 @@ class HomeState extends ChangeNotifier {
     } catch (e) {
       log('search error: $e');
       if (e.toString().contains('invalid status code of 500')) {
-        await searchMembers();
+        await searchMembers(userId);
       }
     }
     return paginatedMembersData.members;

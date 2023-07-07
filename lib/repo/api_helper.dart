@@ -1,7 +1,12 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
+// * Dio Start
 enum Method { GET, POST, PATCH, DELETE }
+
+const String baseUrl = 'http://5.9.88.108:5500/api/v1';
 
 class Request {
   final String _url;
@@ -18,7 +23,7 @@ class Request {
       return await dio.request(baseUrl + _url,
           options: Options(method: _getMethodString(method)), data: _body);
     } catch (e) {
-      debugPrint('Dio Error: $e');
+      // log('Dio Error: $e');
       return Future.error(e);
     }
   }
@@ -52,11 +57,30 @@ class DioSingleton {
   static DioSingleton get instance => _instance;
 
   DioSingleton._internal() {
-    const Duration timeout = Duration(seconds: 60);
+    const Duration timeout = Duration(seconds: 30);
     dio = Dio(BaseOptions(
       responseType: ResponseType.json,
       connectTimeout: timeout,
       receiveTimeout: timeout,
     ));
+  }
+}
+
+// * Dio End
+
+Future<T> executeSafely<T>(Future<T> Function() function) async {
+  try {
+    return await function();
+  } on DioError catch (e) {
+    // debugPrint(e.response?.data.toString());
+    final String errorMessage =
+        e.response?.data['message'] ?? 'Something went wrong';
+    log('Error: $errorMessage');
+
+    throw errorMessage;
+  } catch (e) {
+    log('Error: $e');
+    debugPrint(e.toString());
+    rethrow;
   }
 }

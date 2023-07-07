@@ -117,13 +117,21 @@ void pop(BuildContext context) => Navigator.of(context).pop();
 void popToMain(BuildContext context) =>
     Navigator.of(context).popUntil((route) => route.isFirst);
 
+void popAllAndGoTo(BuildContext context, Widget child) =>
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => child),
+      (Route<dynamic> route) => false,
+    );
+
 void snack(BuildContext context, String message, {bool info = false}) {
   debugPrint(message);
 
   ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
     ..showSnackBar(SnackBar(
-      backgroundColor: info ? Theme.of(context).primaryColor : Colors.red,
+      backgroundColor:
+          info ? Theme.of(context).colorScheme.primary : Colors.red,
       // behavior: SnackBarBehavior.floating,
       content: Text(
         message,
@@ -153,7 +161,7 @@ void alert(BuildContext context, String message,
       title: info
           ? Icon(
               icon ?? Icons.check_circle_outline,
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.primary,
               size: 90,
             )
           : Icon(
@@ -202,7 +210,7 @@ void sureAlert({
         actionsAlignment: MainAxisAlignment.center,
         title: Icon(
           Icons.help_outline,
-          color: Theme.of(context).primaryColor,
+          color: Theme.of(context).colorScheme.primary,
           size: 90,
         ),
         content: Column(

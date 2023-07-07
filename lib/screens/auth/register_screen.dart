@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,7 +64,7 @@ class RegisterScreen extends StatelessWidget {
                   TextFormField(
                     initialValue: _phoneNumber,
                     onSaved: (value) {
-                      _phoneNumber = '+$value';
+                      _phoneNumber = '$value';
                     },
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
@@ -160,49 +159,28 @@ class RegisterScreen extends StatelessWidget {
   Future<void> register(BuildContext context) async {
     getStickyLoader(context);
 
-    _formKey.currentState!.validate();
-    _formKey.currentState!.save();
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
 
-    try {
-      await AuthRepo.instance.checkIfPhoneExists(_phoneNumber);
-    } catch (e) {
-      pop(context);
-      snack(context, e.toString());
-      return;
-    }
-
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: _phoneNumber,
-      verificationCompleted: (PhoneAuthCredential credential) {
+      try {
+        await AuthRepo.instance.signUp(
+            name: _name,
+            email: _email,
+            phone: _phoneNumber,
+            password: _passwordController.text);
         pop(context);
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        log('error : ${e.code}');
-        pop(context);
-        if (e.code == 'invalid-phone-number') {
-          snack(context, 'Invalid phone number');
-        } else {
-          snack(context, e.message!);
-        }
-      },
-      codeSent: (String verificationId, int? resendToken) {
-        pop(context);
-        replace(
+        push(
             context,
             OtpScreen(
-              phoneNumber: _phoneNumber,
-              email: _email,
-              password: _passwordController.text,
-              verificationId: verificationId,
-              name: _name,
               phone: _phoneNumber,
               authType: AuthType.register,
+              email: _email,
             ));
-      },
-      codeAutoRetrievalTimeout: (String verificationID) {
+      } catch (e) {
         pop(context);
-      },
-      timeout: const Duration(seconds: 120),
-    );
+        snack(context, e.toString());
+        return;
+      }
+    }
   }
 }

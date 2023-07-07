@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../constants/enums.dart';
 import '../../models/member.dart';
+import '../../state/auth_state.dart';
 import '../../state/home_state.dart';
 import '../../utils/snippet.dart';
 import 'search_results.dart';
@@ -33,10 +34,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _fetchPage(int pageKey) async {
     log('pageKey: $pageKey');
     try {
+      final AuthState authState =
+          Provider.of<AuthState>(context, listen: false);
+
       final HomeState homeState =
           Provider.of<HomeState>(context, listen: false);
       homeState.currentPage = pageKey;
-      final List<MemberModel> newItems = await homeState.searchMembers();
+      final List<MemberModel> newItems = await homeState.searchMembers(
+        authState.user!.id,
+      );
 
       final isLastPage = newItems.length < homeState.currentPage;
       if (isLastPage) {

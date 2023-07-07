@@ -6,10 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants/app_images.dart';
-import '../../repo/auth_repo.dart';
+import '../../state/auth_state.dart';
 import '../../state/general_state.dart';
 import '../../utils/snippet.dart';
-import 'forgot_password_screen.dart';
+import '../auth_handler.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -49,7 +49,7 @@ class LoginScreen extends StatelessWidget {
                   const SizedBox(height: 50),
                   TextFormField(
                     keyboardType: TextInputType.phone,
-                    onSaved: (value) => _phoneNumber = '+$value',
+                    onSaved: (value) => _phoneNumber = value.toString(),
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter phone number';
@@ -82,19 +82,20 @@ class LoginScreen extends StatelessWidget {
                       prefixIcon: Icon(Icons.lock),
                     ),
                   ),
+                  const SizedBox(height: 20),
 
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () async {
-                        await showDialog(
-                          context: context,
-                          builder: (context) => ForgotPasswordWidget(),
-                        );
-                      },
-                      child: const Text('Forgot Password'),
-                    ),
-                  ),
+                  // Align(
+                  //   alignment: Alignment.centerRight,
+                  //   child: TextButton(
+                  //     onPressed: () async {
+                  //       await showDialog(
+                  //         context: context,
+                  //         builder: (context) => ForgotPasswordWidget(),
+                  //       );
+                  //     },
+                  //     child: const Text('Forgot Password'),
+                  //   ),
+                  // ),
 
                   Row(
                     children: [
@@ -105,6 +106,9 @@ class LoginScreen extends StatelessWidget {
                               onPressed: state.isLoading
                                   ? null
                                   : () async {
+                                      final AuthState authState =
+                                          Provider.of<AuthState>(context,
+                                              listen: false);
                                       try {
                                         if (!_formKey.currentState!
                                             .validate()) {
@@ -112,12 +116,16 @@ class LoginScreen extends StatelessWidget {
                                         }
                                         _formKey.currentState?.save();
                                         state.setLoading(true);
-                                        await AuthRepo.instance.signIn(
-                                            // email: _email,
-                                            phone: _phoneNumber,
-                                            password: _password);
+                                        await authState.login(
+                                          _phoneNumber,
+                                          _password,
+                                        );
                                         if (context.mounted) {
+                                          snack(context, 'Login Success',
+                                              info: true);
                                           state.setLoading(false);
+
+                                          popAllAndGoTo(context, AuthHandler());
                                         }
                                       } catch (e) {
                                         snack(context, e.toString());

@@ -1,10 +1,10 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/member.dart';
+import '../../state/auth_state.dart';
 import '../../state/home_state.dart';
 import '../../utils/snippet.dart';
 import 'member_list.dart';
@@ -36,10 +36,14 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     homeState.isLoading = true;
     // push(context, SearchResultsScreen());
     try {
+      final AuthState authState =
+          Provider.of<AuthState>(context, listen: false);
+
       final HomeState homeState =
           Provider.of<HomeState>(context, listen: false);
       homeState.currentPage = 0;
-      final List<MemberModel> newItems = await homeState.searchMembers();
+      final List<MemberModel> newItems =
+          await homeState.searchMembers(authState.user!.id);
 
       final isLastPage = newItems.length < homeState.currentPage;
       if (isLastPage) {
@@ -56,12 +60,15 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   }
 
   Future<void> _fetchPage(int pageKey) async {
-    log('pageKey: $pageKey');
     try {
+      final AuthState authState =
+          Provider.of<AuthState>(context, listen: false);
+
       final HomeState homeState =
           Provider.of<HomeState>(context, listen: false);
       homeState.currentPage = pageKey;
-      final List<MemberModel> newItems = await homeState.searchMembers();
+      final List<MemberModel> newItems =
+          await homeState.searchMembers(authState.user!.id);
 
       final isLastPage = newItems.length < homeState.currentPage;
       if (isLastPage) {

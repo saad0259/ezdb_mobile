@@ -1,13 +1,12 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../models/user.dart';
-import '../repo/auth_repo.dart';
+import '../state/auth_state.dart';
 import '../state/dashboard_state.dart';
 import '../state/home_state.dart';
+import '../utils/snippet.dart';
+import 'auth_handler.dart';
 
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
@@ -21,30 +20,21 @@ class SettingScreen extends StatelessWidget {
       padding: const EdgeInsets.all(18.0),
       child: Column(
         children: [
-          FutureBuilder<UserModel>(
-            future: AuthRepo.instance.getUser(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Text('Loading...');
-              } else if (snapshot.hasError) {
-                log(snapshot.error.toString());
-                return const Text('Error');
-              } else {
-                final UserModel user = snapshot.data;
-                return Column(
-                  children: [
-                    Text(
-                      'Hello ${user.name}',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 18),
-                    Text(
-                      'Your membership will expire on ${DateFormat('dd MMM yyyy').format(user.memberShipExpiry.toDate())}',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ],
-                );
-              }
+          Consumer<AuthState>(
+            builder: (context, authState, child) {
+              return Column(
+                children: [
+                  Text(
+                    'Hello ${authState.user?.name}',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 18),
+                  Text(
+                    'Your membership will expire on ${authState.user?.memberShipExpiry}',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ],
+              );
             },
           ),
           const SizedBox(height: 18),
@@ -135,10 +125,14 @@ class SettingScreen extends StatelessWidget {
               Icons.arrow_circle_right_outlined,
               color: Theme.of(context).colorScheme.primary,
             ),
-            onTap: () {
-              AuthRepo.instance.signOut();
+            onTap: () async {
+              final AuthState authState =
+                  Provider.of<AuthState>(context, listen: false);
+
+              await authState.logout();
               dashboardState.reset();
               homeState.reset();
+              popAllAndGoTo(context, AuthHandler());
             },
           ),
           const SizedBox(height: 18),
