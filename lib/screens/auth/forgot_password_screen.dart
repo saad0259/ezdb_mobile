@@ -44,7 +44,7 @@ class ForgotPasswordWidget extends StatelessWidget {
                 _formKey.currentState?.save();
                 getStickyLoader(context);
                 try {
-                  await AuthRepo.instance.passwordReset(_email);
+                  // await AuthRepo.instance.passwordReset(_email);
 
                   if (context.mounted) {
                     snack(context, 'Password reset link sent to your email');

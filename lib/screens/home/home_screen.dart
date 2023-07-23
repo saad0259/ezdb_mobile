@@ -243,6 +243,28 @@ class SearchForm extends StatelessWidget {
                   onPressed: () async {
                     //close keypad
                     FocusScope.of(context).unfocus();
+                    final AuthState authState =
+                        Provider.of<AuthState>(context, listen: false);
+
+                    if (authState.user?.isExpired ?? false) {
+                      return showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Expired'),
+                          content: const Text(
+                              'Your membership has expired. Please See offers and renew your membership'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
                     if (formKey.currentState?.validate() ?? false) {
                       homeState.isLoading = true;
                       push(context, SearchResultsScreen());

@@ -28,12 +28,8 @@ class OfferState extends ChangeNotifier {
 
   Future<void> loadData() async {
     isLoading = true;
-    Stream<List<OfferModel>> streamOffer = OfferRepo.instance.watchOffers();
-    offers = await streamOffer.first;
+    offers = await OfferRepo.instance.getOffers();
 
-    streamOffer.listen((List<OfferModel> offers) {
-      this.offers = offers;
-    });
     contactUsLink = await SettingsRepo.instance.getLink();
 
     isLoading = false;

@@ -14,13 +14,11 @@ class OtpScreen extends StatefulWidget {
   final AuthType authType;
 
   final String? phone;
-  final String? email;
 
   const OtpScreen({
     Key? key,
     required this.authType,
     this.phone,
-    this.email,
   }) : super(key: key);
 
   @override
@@ -89,7 +87,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
                           try {
                             await AuthRepo.instance.verifyOtp(
-                              widget.email!,
+                              widget.phone!,
                               state.otpChars.join(),
                             );
 
@@ -158,7 +156,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               try {
                                 getStickyLoader(context);
                                 await AuthRepo.instance
-                                    .resendOtp(widget.email!);
+                                    .resendOtp(widget.phone!);
 
                                 otpState.timer = 60;
                                 otpState.startTimer();

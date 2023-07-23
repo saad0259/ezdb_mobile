@@ -11,6 +11,7 @@ import '../../state/general_state.dart';
 import '../../utils/snippet.dart';
 import '../auth_handler.dart';
 import 'register_screen.dart';
+import 'reset_password_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -23,8 +24,8 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      _phoneNumber = '60101231234';
-      _password = 'Lahore123@';
+      _phoneNumber = '92123456789';
+      _password = '12345678';
     }
     return SafeArea(
       child: Scaffold(
@@ -40,7 +41,6 @@ class LoginScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  //logo, phone input, password input, login button, forgot password, register
                   const SizedBox(height: 30),
                   Image.asset(
                     AppImages.logo,
@@ -70,7 +70,6 @@ class LoginScreen extends StatelessWidget {
                       prefixIcon: Icon(Icons.phone_outlined),
                     ),
                   ),
-
                   const SizedBox(height: 20),
                   TextFormField(
                     initialValue: _password,
@@ -83,20 +82,6 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-
-                  // Align(
-                  //   alignment: Alignment.centerRight,
-                  //   child: TextButton(
-                  //     onPressed: () async {
-                  //       await showDialog(
-                  //         context: context,
-                  //         builder: (context) => ForgotPasswordWidget(),
-                  //       );
-                  //     },
-                  //     child: const Text('Forgot Password'),
-                  //   ),
-                  // ),
-
                   Row(
                     children: [
                       Expanded(
@@ -144,7 +129,84 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-
+                  const SizedBox(height: 0),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    heightFactor: 1,
+                    child: TextButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Forgot Password'),
+                              content: TextFormField(
+                                keyboardType: TextInputType.phone,
+                                onSaved: (value) =>
+                                    _phoneNumber = value.toString(),
+                                validator: (String? value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter phone number';
+                                  } else if (value.length < 11) {
+                                    return 'Please enter valid phone number';
+                                  } else if (!value.startsWith('60')) {
+                                    return 'Please enter valid phone number';
+                                  }
+                                  return null;
+                                },
+                                initialValue: _phoneNumber,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'[0-9]')),
+                                  LengthLimitingTextInputFormatter(11),
+                                ],
+                                decoration: const InputDecoration(
+                                  labelText: '60 10-123 1234',
+                                  prefixIcon: Icon(Icons.phone_outlined),
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    final AuthState authState =
+                                        Provider.of<AuthState>(context,
+                                            listen: false);
+                                    try {
+                                      if (!_formKey.currentState!.validate()) {
+                                        return;
+                                      }
+                                      _formKey.currentState?.save();
+                                      getStickyLoader(context);
+                                      await authState.forgotPassword(
+                                        _phoneNumber,
+                                      );
+                                      if (context.mounted) {
+                                        snack(context, 'OTP Sent', info: true);
+                                      }
+                                      pop(context);
+                                    } catch (e) {
+                                      snack(context, e.toString());
+                                      log(e.toString());
+                                    }
+                                    pop(context);
+                                    replace(context, ResetPasswordScreen());
+                                  },
+                                  child: const Text('Send OTP'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: const Text('Forgot Password?'),
+                    ),
+                  ),
                   TextButton(
                     onPressed: () {
                       replace(context, RegisterScreen());

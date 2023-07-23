@@ -1,20 +1,28 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:developer';
+
+import 'package:dio/dio.dart';
 
 import '../models/offer_model.dart';
+import 'api_helper.dart';
 
 class OfferRepo {
   static final OfferRepo instance = OfferRepo();
-  final CollectionReference _offerCollection =
-      FirebaseFirestore.instance.collection('offers');
+  final String offerPath = '/offers';
+  Future<List<OfferModel>> getOffers() {
+    return executeSafely(() async {
+      final Request request = Request(offerPath, null);
+      final Response response = await request.get(baseUrl);
 
-  Stream<List<OfferModel>> watchOffers() {
-    return _offerCollection
-        .orderBy('createdAt', descending: false)
-        .snapshots()
-        .map((snapshot) {
-      return snapshot.docs.map((doc) {
-        return OfferModel.fromMap(doc.id, doc.data() as Map<String, dynamic>);
-      }).toList();
+      if (response.statusCode == 200) {
+        log('response: ${response.data}');
+        final List<OfferModel> offers = [];
+        response.data['data'].forEach((offer) {
+          offers.add(OfferModel.fromMap(offer));
+        });
+        return offers;
+      } else {
+        throw response.data['message'];
+      }
     });
   }
 }

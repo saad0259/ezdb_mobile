@@ -1,5 +1,7 @@
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../state/auth_state.dart';
@@ -16,119 +18,56 @@ class SettingScreen extends StatelessWidget {
     final DashboardState dashboardState =
         Provider.of<DashboardState>(context, listen: false);
     final HomeState homeState = Provider.of<HomeState>(context, listen: false);
+    final AuthState authState = Provider.of<AuthState>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.all(18.0),
       child: Column(
         children: [
-          Consumer<AuthState>(
-            builder: (context, authState, child) {
-              return Column(
-                children: [
-                  Text(
-                    'Hello ${authState.user?.name}',
-                    style: Theme.of(context).textTheme.titleLarge,
+          SettingsListItem(
+            title: 'Billing',
+            icon: Icons.timer_outlined,
+            onTap: () {
+              final DateTime expiry =
+                  authState.user?.memberShipExpiry ?? DateTime.now();
+
+              final bool isExpired = expiry.isBefore(DateTime.now());
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('Membership Details'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                          'Membership Expiry: ${DateFormat.yMMMMd().format(expiry)}'),
+                      const SizedBox(height: 18),
+                      Text(
+                          'Membership Status: ${isExpired ? 'Expired' : 'Active'}'),
+                      if (!isExpired) ...[
+                        const SizedBox(height: 18),
+                        Text(
+                          'Days Left: ${expiry.difference(DateTime.now()).inDays}',
+                        ),
+                      ]
+                    ],
                   ),
-                  const SizedBox(height: 18),
-                  Text(
-                    'Your membership will expire on ${authState.user?.memberShipExpiry}',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ],
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('OK'),
+                    ),
+                  ],
+                ),
               );
             },
           ),
           const SizedBox(height: 18),
-          ListTile(
-            tileColor: Colors.grey.shade200,
-            contentPadding: const EdgeInsets.all(10),
-            title: Text(
-              'Send Feedback',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            trailing: Icon(
-              Icons.arrow_circle_right_outlined,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            onTap: () {},
-          ),
-          const SizedBox(height: 18),
-          ListTile(
-            tileColor: Colors.grey.shade200,
-            contentPadding: const EdgeInsets.all(10),
-            title: Text(
-              'Report a Bug',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            trailing: Icon(
-              Icons.arrow_circle_right_outlined,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            onTap: () {},
-          ),
-          const SizedBox(height: 18),
-          ListTile(
-            tileColor: Colors.grey.shade200,
-            contentPadding: const EdgeInsets.all(10),
-            title: Text(
-              'Rate our App',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            trailing: Icon(
-              Icons.arrow_circle_right_outlined,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            onTap: () {},
-          ),
-          const SizedBox(height: 18),
-          ListTile(
-            tileColor: Colors.grey.shade200,
-            contentPadding: const EdgeInsets.all(10),
-            title: Text(
-              'About',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            trailing: Icon(
-              Icons.arrow_circle_right_outlined,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            onTap: () {},
-          ),
-          const SizedBox(height: 18),
-          ListTile(
-            tileColor: Colors.grey.shade200,
-            contentPadding: const EdgeInsets.all(10),
-            title: Text(
-              'Logout',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            trailing: Icon(
-              Icons.arrow_circle_right_outlined,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+          SettingsListItem(
+            title: 'Logout',
+            icon: Icons.arrow_circle_right_outlined,
             onTap: () async {
               final AuthState authState =
                   Provider.of<AuthState>(context, listen: false);
-
               await authState.logout();
               dashboardState.reset();
               homeState.reset();
@@ -138,6 +77,40 @@ class SettingScreen extends StatelessWidget {
           const SizedBox(height: 18),
         ],
       ),
+    );
+  }
+}
+
+class SettingsListItem extends StatelessWidget {
+  const SettingsListItem({
+    super.key,
+    required this.title,
+    required this.icon,
+    this.onTap,
+  });
+
+  final String title;
+  final IconData icon;
+  final Function()? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      tileColor: Colors.grey.shade200,
+      contentPadding: const EdgeInsets.all(10),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+      ),
+      trailing: Icon(
+        icon,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+      onTap: onTap,
     );
   }
 }

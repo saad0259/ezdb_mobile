@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
 
 import '../models/user.dart';
@@ -12,6 +14,13 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _passwordVisible = false;
+  bool get passwordVisible => _passwordVisible;
+  set passwordVisible(bool value) {
+    _passwordVisible = value;
+    notifyListeners();
+  }
+
   UserModel? _user;
   UserModel? get user => _user;
   set user(UserModel? user) {
@@ -23,9 +32,38 @@ class AuthState extends ChangeNotifier {
     try {
       final UserModel? userdata =
           await AuthRepo.instance.signIn(phone: phone, password: password);
+      log(userdata.toString());
       user = userdata;
 
+      log('user phone : ${user?.phone}');
+      log('user token : ${user?.token}');
+      log('user membership expiry : ${user?.memberShipExpiry}');
+
       await prefs.authToken.save(user?.token ?? '');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> forgotPassword(String phone) async {
+    try {
+      await AuthRepo.instance.forgotPassword(phone);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> resetPassword({
+    required String phone,
+    required String password,
+    required String otp,
+  }) async {
+    try {
+      await AuthRepo.instance.resetPassword(
+        phone: phone,
+        password: password,
+        otp: otp,
+      );
     } catch (e) {
       rethrow;
     }
