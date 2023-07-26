@@ -24,8 +24,8 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      _phoneNumber = '60101231234';
-      _password = 'Lahore123@';
+      // _phoneNumber = '60101231234';
+      // _password = 'Lahore123@';
     }
     return SafeArea(
       child: Scaffold(
@@ -138,31 +138,36 @@ class LoginScreen extends StatelessWidget {
                         await showDialog(
                           context: context,
                           builder: (context) {
+                            final GlobalKey<FormState> _newKey =
+                                GlobalKey<FormState>();
                             return AlertDialog(
                               title: const Text('Forgot Password'),
-                              content: TextFormField(
-                                keyboardType: TextInputType.phone,
-                                onSaved: (value) =>
-                                    _phoneNumber = value.toString(),
-                                validator: (String? value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter phone number';
-                                  } else if (value.length < 11) {
-                                    return 'Please enter valid phone number';
-                                  } else if (!value.startsWith('60')) {
-                                    return 'Please enter valid phone number';
-                                  }
-                                  return null;
-                                },
-                                initialValue: _phoneNumber,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp(r'[0-9]')),
-                                  LengthLimitingTextInputFormatter(11),
-                                ],
-                                decoration: const InputDecoration(
-                                  labelText: '60 10-123 1234',
-                                  prefixIcon: Icon(Icons.phone_outlined),
+                              content: Form(
+                                key: _newKey,
+                                child: TextFormField(
+                                  keyboardType: TextInputType.phone,
+                                  onSaved: (value) =>
+                                      _phoneNumber = value.toString(),
+                                  validator: (String? value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter phone number';
+                                    } else if (value.length < 11) {
+                                      return 'Please enter valid phone number';
+                                    } else if (!value.startsWith('60')) {
+                                      return 'Please enter valid phone number';
+                                    }
+                                    return null;
+                                  },
+                                  initialValue: _phoneNumber,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'[0-9]')),
+                                    LengthLimitingTextInputFormatter(11),
+                                  ],
+                                  decoration: const InputDecoration(
+                                    labelText: '60 10-123 1234',
+                                    prefixIcon: Icon(Icons.phone_outlined),
+                                  ),
                                 ),
                               ),
                               actions: [
@@ -178,10 +183,10 @@ class LoginScreen extends StatelessWidget {
                                         Provider.of<AuthState>(context,
                                             listen: false);
                                     try {
-                                      if (!_formKey.currentState!.validate()) {
+                                      if (!_newKey.currentState!.validate()) {
                                         return;
                                       }
-                                      _formKey.currentState?.save();
+                                      _newKey.currentState?.save();
                                       getStickyLoader(context);
                                       await authState.forgotPassword(
                                         _phoneNumber,
