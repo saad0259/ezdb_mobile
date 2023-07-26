@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
@@ -12,21 +12,29 @@ class OtpState extends ChangeNotifier {
     notifyListeners();
   }
 
-  int _timer = 60;
-  int get timer => _timer;
-  set timer(int value) {
-    _timer = value;
+  int _start = 60;
+  int get start => _start;
+  set start(int value) {
+    _start = value;
     notifyListeners();
   }
 
+  Timer _timer = Timer.periodic(Duration.zero, (timer) {});
+
   void startTimer() {
-    log('Timer: $timer');
-    Future<void>.delayed(const Duration(seconds: 1), () {
-      if (timer > 0) {
-        timer = timer - 1;
-        startTimer();
-      } else {}
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(oneSec, (timer) {
+      if (_start == 0) {
+        _timer.cancel();
+      } else {
+        _start--;
+        notifyListeners(); // Notify listeners when the timer value changes
+      }
     });
+  }
+
+  void reset() {
+    _timer.cancel();
   }
 
   void add(String value) {

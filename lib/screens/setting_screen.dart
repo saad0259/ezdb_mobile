@@ -46,7 +46,7 @@ class SettingScreen extends StatelessWidget {
                       if (!isExpired) ...[
                         const SizedBox(height: 18),
                         Text(
-                          'Days Left: ${expiry.difference(DateTime.now()).inDays}',
+                          'Days Left: ${expiry.difference(DateTime.now()).inDays + 1}',
                         ),
                       ]
                     ],

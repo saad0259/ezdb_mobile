@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants/app_images.dart';
@@ -8,10 +9,10 @@ import '../auth_handler.dart';
 import 'register_screen.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
-  ResetPasswordScreen({super.key});
+  ResetPasswordScreen({super.key, required this.phoneNumber});
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String _phoneNumber = '';
+  final String phoneNumber;
   String _password = '';
   String _otp = '';
 
@@ -39,25 +40,6 @@ class ResetPasswordScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 50),
                   TextFormField(
-                    keyboardType: TextInputType.phone,
-                    onSaved: (value) => _phoneNumber = value.toString(),
-                    // validator: (String? value) {
-                    //   if (value == null || value.isEmpty) {
-                    //     return 'Please enter phone number';
-                    //   } else if (value.length < 11) {
-                    //     return 'Please enter valid phone number';
-                    //   } else if (!value.startsWith('60')) {
-                    //     return 'Please enter valid phone number';
-                    //   }
-                    //   return null;
-                    // },
-                    decoration: const InputDecoration(
-                      hintText: 'Phone Number',
-                      prefixIcon: Icon(Icons.phone),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
                     obscureText: true,
                     onSaved: (value) => _password = value.toString(),
                     validator: (String? value) {
@@ -77,6 +59,10 @@ class ResetPasswordScreen extends StatelessWidget {
                   TextFormField(
                     keyboardType: TextInputType.number,
                     onSaved: (value) => _otp = value.toString(),
+                    maxLength: 6,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter OTP';
@@ -101,7 +87,7 @@ class ResetPasswordScreen extends StatelessWidget {
                           try {
                             getStickyLoader(context);
                             await authState.resetPassword(
-                              phone: _phoneNumber,
+                              phone: phoneNumber,
                               password: _password,
                               otp: _otp,
                             );

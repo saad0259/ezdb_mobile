@@ -14,9 +14,9 @@ class OfferRepo {
       final Response response = await request.get(baseUrl);
 
       if (response.statusCode == 200) {
-        log('response: ${response.data}');
         final List<OfferModel> offers = [];
-        response.data['data'].forEach((offer) {
+        response.data.forEach((offer) {
+          log(offer.toString());
           offers.add(OfferModel.fromMap(offer));
         });
         return offers;

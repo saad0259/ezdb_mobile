@@ -32,14 +32,29 @@ class AuthState extends ChangeNotifier {
     try {
       final UserModel? userdata =
           await AuthRepo.instance.signIn(phone: phone, password: password);
-      log(userdata.toString());
       user = userdata;
 
-      log('user phone : ${user?.phone}');
-      log('user token : ${user?.token}');
-      log('user membership expiry : ${user?.memberShipExpiry}');
+      await prefs.authToken.save(user?.token ?? '');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> verifyOtp(String phone, String otp) async {
+    try {
+      final UserModel? userdata = await AuthRepo.instance.verifyOtp(phone, otp);
+      user = userdata;
 
       await prefs.authToken.save(user?.token ?? '');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateUser(String id) async {
+    try {
+      final UserModel? userData = await AuthRepo.instance.getUserById(id);
+      this.user = userData;
     } catch (e) {
       rethrow;
     }
@@ -59,6 +74,7 @@ class AuthState extends ChangeNotifier {
     required String otp,
   }) async {
     try {
+      log('resetPassword');
       await AuthRepo.instance.resetPassword(
         phone: phone,
         password: password,

@@ -24,8 +24,8 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      _phoneNumber = '92123456789';
-      _password = '12345678';
+      _phoneNumber = '60101231234';
+      _password = 'Lahore123@';
     }
     return SafeArea(
       child: Scaffold(
@@ -134,8 +134,8 @@ class LoginScreen extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     heightFactor: 1,
                     child: TextButton(
-                      onPressed: () {
-                        showDialog(
+                      onPressed: () async {
+                        await showDialog(
                           context: context,
                           builder: (context) {
                             return AlertDialog(
@@ -186,16 +186,22 @@ class LoginScreen extends StatelessWidget {
                                       await authState.forgotPassword(
                                         _phoneNumber,
                                       );
-                                      if (context.mounted) {
-                                        snack(context, 'OTP Sent', info: true);
-                                      }
                                       pop(context);
+                                      // if (context.mounted) {
+                                      snack(context, 'OTP Sent', info: true);
+                                      pop(context);
+                                      replace(
+                                          context,
+                                          ResetPasswordScreen(
+                                              phoneNumber: _phoneNumber));
+
+                                      // }
                                     } catch (e) {
                                       snack(context, e.toString());
+                                      pop(context);
+                                      pop(context);
                                       log(e.toString());
                                     }
-                                    pop(context);
-                                    replace(context, ResetPasswordScreen());
                                   },
                                   child: const Text('Send OTP'),
                                 ),

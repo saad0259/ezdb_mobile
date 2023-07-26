@@ -20,7 +20,7 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      _phoneNumber = '92123456789';
+      _phoneNumber = '60101231234';
       _passwordController.text = 'Lahore123@';
     }
     return SafeArea(

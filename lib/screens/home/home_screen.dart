@@ -110,35 +110,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            // Consumer<HomeState>(
-            //   builder: (context, homeState, child) {
-            //     return homeState.isLoading
-            //         ? shimmerTableEffect()
-            //         : homeState.members.isEmpty
-            //             ? const Center(
-            //                 child: Text('No data found'),
-            //               )
-            //             : PagedListView<int, MemberModel>.separated(
-            //                 scrollController: _scrollController,
-            //                 pagingController: _pagingController,
-            //                 shrinkWrap: true,
-            //                 // physics: const NeverScrollableScrollPhysics(),
-            //                 // scrollController: _scrollController,
-            //                 separatorBuilder: (context, index) =>
-            //                     const SizedBox(
-            //                   height: 10,
-            //                 ),
-            //                 // physics: const NeverScrollableScrollPhysics(),
-            //                 builderDelegate:
-            //                     PagedChildBuilderDelegate<MemberModel>(
-            //                   itemBuilder: (context, item, index) =>
-            //                       MemberWidget(
-            //                     member: item,
-            //                   ),
-            //                 ),
-            //               );
-            //   },
-            // ),
           ],
         ),
       ),
@@ -255,8 +226,19 @@ class SearchForm extends StatelessWidget {
                               'Your membership has expired. Please See offers and renew your membership'),
                           actions: [
                             TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
+                              onPressed: () async {
+                                final AuthState authState =
+                                    Provider.of<AuthState>(context,
+                                        listen: false);
+                                getStickyLoader(context);
+                                try {
+                                  String userId =
+                                      (authState.user?.id ?? '').toString();
+                                  log('userId: $userId');
+                                  authState.updateUser(userId);
+                                } catch (e) {}
+                                pop(context);
+                                pop(context);
                               },
                               child: const Text('OK'),
                             ),

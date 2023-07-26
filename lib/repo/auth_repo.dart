@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/user.dart';
@@ -10,6 +9,7 @@ import 'api_helper.dart';
 class AuthRepo {
   static final AuthRepo instance = AuthRepo();
   final String authPath = '/auth';
+  final String usersPath = '/users';
 
   Future<void> signUp({
     required String phone,
@@ -62,7 +62,7 @@ class AuthRepo {
     });
   }
 
-  Future<void> verifyOtp(String phone, String otp) async {
+  Future<UserModel?> verifyOtp(String phone, String otp) async {
     try {
       final data = {
         'phone': phone,
@@ -74,7 +74,8 @@ class AuthRepo {
 
       if (response.statusCode == 200) {
         log('response: ${response.data}');
-        return response.data;
+        final UserModel user = UserModel.fromMap(response.data['data']);
+        return user;
       } else {
         throw response.data['message'];
       }
@@ -92,12 +93,13 @@ class AuthRepo {
     }
   }
 
-  Future<void> resendOtp(String email) async {
+  Future<void> resendOtp(String phone) async {
     try {
       final data = {
-        'email': email,
+        'phone': phone,
       };
-      final Request request = Request('${authPath}/resend-otp', data);
+      log('data: $data');
+      final Request request = Request('$authPath/resend-otp', data);
       final Response response = await request.post(baseUrl);
 
       if (response.statusCode == 200) {
@@ -151,6 +153,21 @@ class AuthRepo {
 
       if (response.statusCode == 200) {
         return response.data;
+      } else {
+        throw response.data['message'];
+      }
+    });
+  }
+
+  Future<UserModel?> getUserById(String id) async {
+    return executeSafely(() async {
+      final Request request = Request('${usersPath}/$id', null);
+      final Response response = await request.get(baseUrl);
+
+      if (response.statusCode == 200) {
+        log('response: ${response.data}');
+        final UserModel user = UserModel.fromMap(response.data[0]);
+        return user;
       } else {
         throw response.data['message'];
       }

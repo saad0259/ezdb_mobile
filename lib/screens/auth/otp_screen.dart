@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../constants/enums.dart';
 import '../../repo/auth_repo.dart';
 import '../../reusables/numpad.dart';
+import '../../state/auth_state.dart';
 import '../../state/otp_state.dart';
 import '../../utils/snippet.dart';
 
@@ -26,13 +27,25 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
+  late OtpState otpState;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final OtpState otpState = Provider.of<OtpState>(context, listen: false);
+      otpState = Provider.of<OtpState>(context, listen: false);
+      otpState.clear();
+      otpState.start = 60;
       otpState.startTimer();
     });
+  }
+
+  @override
+  void dispose() {
+    if (mounted) {
+      otpState.reset();
+    }
+    super.dispose();
   }
 
   @override
@@ -86,7 +99,9 @@ class _OtpScreenState extends State<OtpScreen> {
                           state.isLoading = true;
 
                           try {
-                            await AuthRepo.instance.verifyOtp(
+                            final AuthState authState =
+                                Provider.of<AuthState>(context, listen: false);
+                            await authState.verifyOtp(
                               widget.phone!,
                               state.otpChars.join(),
                             );
@@ -130,7 +145,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     Consumer<OtpState>(
                       builder: (context, state, child) {
                         return Text(
-                          '${state.timer}',
+                          '${state.start}',
                           style: const TextStyle(
                             fontFamily: 'Bold',
                             fontSize: 14,
@@ -149,7 +164,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 ),
                 Consumer<OtpState>(
                   builder: (context, otpState, child) {
-                    return otpState.timer > 0
+                    return otpState.start > 0
                         ? const SizedBox(height: 30)
                         : TextButton(
                             onPressed: () async {
@@ -158,7 +173,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                 await AuthRepo.instance
                                     .resendOtp(widget.phone!);
 
-                                otpState.timer = 60;
+                                otpState.start = 60;
                                 otpState.startTimer();
                                 snack(context, 'Otp sent', info: true);
                               } catch (e) {

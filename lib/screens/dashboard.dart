@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:mega_petertan343/utils/snippet.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/app_images.dart';
+import '../state/auth_state.dart';
 import '../state/dashboard_state.dart';
 import 'home/home_screen.dart';
 import 'notification_screen.dart';
@@ -50,6 +54,23 @@ class DashboardScreen extends StatelessWidget {
               ),
             ),
             actions: [
+              IconButton(
+                onPressed: () async {
+                  final AuthState authState =
+                      Provider.of<AuthState>(context, listen: false);
+                  getStickyLoader(context);
+                  try {
+                    String userId = (authState.user?.id ?? '').toString();
+                    log('userId: $userId');
+                    await authState.updateUser(userId);
+                    snack(context, 'Info updated', info: true);
+                  } catch (e) {
+                    snack(context, e.toString());
+                  }
+                  pop(context);
+                },
+                icon: const Icon(Icons.refresh),
+              ),
               // IconButton(
               //   onPressed: () {
               //     replace(context, const LoginScreen());

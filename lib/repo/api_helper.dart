@@ -25,6 +25,7 @@ class Request {
       return await dio.request(baseUrl + _url,
           options: Options(method: _getMethodString(method)), data: _body);
     } catch (e) {
+      log('send request error : $e');
       return Future.error(e);
     }
   }
