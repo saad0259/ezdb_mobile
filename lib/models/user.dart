@@ -23,4 +23,13 @@ class UserModel {
           : DateTime.parse(data['membershipExpiry']),
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'phone': phone,
+      'token': token,
+      'membershipExpiry': memberShipExpiry.toIso8601String(),
+    };
+  }
 }
