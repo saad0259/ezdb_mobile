@@ -247,6 +247,8 @@ class SearchForm extends StatelessWidget {
                       );
                     }
 
+                    log('helooooooo : ${authState.user?.isExpired}');
+
                     if (formKey.currentState?.validate() ?? false) {
                       homeState.isLoading = true;
                       push(context, SearchResultsScreen());

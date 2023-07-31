@@ -13,8 +13,6 @@ import 'state/home_state.dart';
 import 'state/offer_state.dart';
 import 'state/otp_state.dart';
 
-//TODO: get to otp screen if user is not verified on login
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

@@ -50,7 +50,7 @@ class RegisterScreen extends StatelessWidget {
                     },
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                      LengthLimitingTextInputFormatter(11),
+                      LengthLimitingTextInputFormatter(13),
                     ],
                     validator: (String? value) {
                       if (value == null || value.isEmpty) {

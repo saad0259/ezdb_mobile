@@ -63,7 +63,7 @@ class LoginScreen extends StatelessWidget {
                     initialValue: _phoneNumber,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                      LengthLimitingTextInputFormatter(11),
+                      LengthLimitingTextInputFormatter(13),
                     ],
                     decoration: const InputDecoration(
                       labelText: '60 10-123 1234',
@@ -162,7 +162,7 @@ class LoginScreen extends StatelessWidget {
                                   inputFormatters: [
                                     FilteringTextInputFormatter.allow(
                                         RegExp(r'[0-9]')),
-                                    LengthLimitingTextInputFormatter(11),
+                                    LengthLimitingTextInputFormatter(13),
                                   ],
                                   decoration: const InputDecoration(
                                     labelText: '60 10-123 1234',
