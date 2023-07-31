@@ -53,7 +53,6 @@ class AuthRepo {
       final Response response = await request.post(baseUrl);
 
       if (response.statusCode == 200) {
-        log('response: ${response.data}');
         final UserModel user = UserModel.fromMap(response.data['data']);
         return user;
       } else {

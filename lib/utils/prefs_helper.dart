@@ -6,7 +6,7 @@ class PrefsHelper<T> {
   final String key;
 
   PrefsHelper(String key) : key = "Prefs$key" {
-    if (![int, double, String, bool, Map<String, dynamic>].any((t) => t == T)) {
+    if (![int, double, String, bool].any((t) => t == T)) {
       throw ArgumentError(
           "Only native type allowed, given type ${T.toString()}");
     }

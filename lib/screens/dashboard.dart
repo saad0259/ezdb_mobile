@@ -12,9 +12,14 @@ import 'notification_screen.dart';
 import 'offer_screen.dart';
 import 'setting_screen.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   DashboardScreen({super.key});
 
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
   final List<DashboardTabs> _tabs = [
     DashboardTabs(
       title: 'Home',
@@ -33,6 +38,25 @@ class DashboardScreen extends StatelessWidget {
       child: SettingScreen(),
     ),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final AuthState authState =
+          Provider.of<AuthState>(context, listen: false);
+      getStickyLoader(context);
+      try {
+        String userId = (authState.user?.id ?? '').toString();
+        log('userId: $userId');
+        await authState.updateUser(userId);
+        // snack(context, 'Info updated', info: true);
+      } catch (e) {
+        // snack(context, e.toString());
+      }
+      pop(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

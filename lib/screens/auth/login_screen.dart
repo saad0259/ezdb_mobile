@@ -24,8 +24,8 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (kDebugMode) {
-      // _phoneNumber = '60101231234';
-      // _password = 'Lahore123@';
+      _phoneNumber = '60101231234';
+      _password = 'Lahore123@';
     }
     return SafeArea(
       child: Scaffold(
@@ -105,13 +105,13 @@ class LoginScreen extends StatelessWidget {
                                           _phoneNumber,
                                           _password,
                                         );
-                                        if (context.mounted) {
-                                          snack(context, 'Login Success',
-                                              info: true);
-                                          state.setLoading(false);
+                                        // if (context.mounted) {
+                                        popAllAndGoTo(context, AuthHandler());
+                                        snack(context, 'Login Success',
+                                            info: true);
+                                        state.setLoading(false);
 
-                                          popAllAndGoTo(context, AuthHandler());
-                                        }
+                                        // }
                                       } catch (e) {
                                         snack(context, e.toString());
                                         log(e.toString());

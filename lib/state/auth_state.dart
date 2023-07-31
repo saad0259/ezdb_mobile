@@ -34,7 +34,7 @@ class AuthState extends ChangeNotifier {
           await AuthRepo.instance.signIn(phone: phone, password: password);
       user = userdata;
 
-      await prefs.authData.save(user?.toMap() ?? {});
+      await prefs.authToken.save(user?.token ?? '');
     } catch (e) {
       rethrow;
     }
@@ -45,7 +45,7 @@ class AuthState extends ChangeNotifier {
       final UserModel? userdata = await AuthRepo.instance.verifyOtp(phone, otp);
       user = userdata;
 
-      await prefs.authData.save(user?.toMap() ?? {});
+      await prefs.authToken.save(user?.token ?? '');
     } catch (e) {
       rethrow;
     }
@@ -87,7 +87,7 @@ class AuthState extends ChangeNotifier {
 
   Future<void> logout() async {
     try {
-      await prefs.authData.clear();
+      await prefs.authToken.clear();
       reset();
     } catch (e) {
       throw e.toString();

@@ -10,5 +10,5 @@ class Prefs {
   static final _prefs = Prefs();
   final selectedTheme = PrefsHelper<bool>("theme");
   final selectedLocale = PrefsHelper<String>("selectedLocale");
-  final authData = PrefsHelper<Map<String, dynamic>>("authToken");
+  final authToken = PrefsHelper<String>("authToken");
 }
