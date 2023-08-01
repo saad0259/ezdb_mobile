@@ -60,6 +60,21 @@ class AuthState extends ChangeNotifier {
     }
   }
 
+  //stream that updates user data every 5 seconds if user.isExpired
+  Stream<void> get userStream => Stream.periodic(
+        const Duration(seconds: 5),
+        (i) {
+          log('userStream: $i');
+          if (user?.isExpired ?? true) {
+            log('userStream: isExpired');
+            updateUser((user?.id ?? '').toString());
+          } else {
+            log('userStream: isNotExpired');
+            userStream.drain();
+          }
+        },
+      );
+
   Future<void> forgotPassword(String phone) async {
     try {
       await AuthRepo.instance.forgotPassword(phone);

@@ -50,6 +50,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         String userId = (authState.user?.id ?? '').toString();
         log('userId: $userId');
         await authState.updateUser(userId);
+        // authState.userStream.listen((event) {
+        //   log('event: ${authState.user?.toMap() ?? ''}');
+        // });
         // snack(context, 'Info updated', info: true);
       } catch (e) {
         // snack(context, e.toString());
