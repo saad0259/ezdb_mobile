@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 
 import '../models/offer_model.dart';
@@ -16,7 +14,6 @@ class OfferRepo {
       if (response.statusCode == 200) {
         final List<OfferModel> offers = [];
         response.data.forEach((offer) {
-          log(offer.toString());
           offers.add(OfferModel.fromMap(offer));
         });
         return offers;

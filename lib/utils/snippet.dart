@@ -468,14 +468,11 @@ Future<String?> alertInput(BuildContext context, String title, String hint,
 
 Future<void> customLaunch(String path) async {
   final Uri url = Uri.parse(path);
-  if (await canLaunchUrl(url)) {
-    await launchUrl(url);
-  } else {
-    try {
-      await launchUrl(url);
-    } catch (e) {
-      log(' could not launch $e');
-      throw 'Failed to launch';
-    }
+
+  try {
+    await launchUrl(url, mode: LaunchMode.externalApplication);
+  } catch (e) {
+    log(' could not launch $e');
+    throw 'Failed to launch';
   }
 }
