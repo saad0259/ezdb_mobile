@@ -234,7 +234,6 @@ class SearchForm extends StatelessWidget {
                                 try {
                                   String userId =
                                       (authState.user?.id ?? '').toString();
-                                  log('userId: $userId');
                                   authState.updateUser(userId);
                                 } catch (e) {}
                                 pop(context);
