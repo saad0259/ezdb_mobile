@@ -6,16 +6,24 @@ import '../repo/settings_repo.dart';
 
 class OfferState extends ChangeNotifier {
   List<OfferModel> _offers = [];
-  List<OfferModel> get offers => _offers;
+  List<OfferModel> get offers =>
+      _offers.where((element) => element.isActive).toList();
   set offers(List<OfferModel> offers) {
     _offers = offers;
     notifyListeners();
   }
 
-  String _contactUsLink = '';
-  String get contactUsLink => _contactUsLink;
-  set contactUsLink(String contactUsLink) {
-    _contactUsLink = contactUsLink;
+  String _whatsappLink = '';
+  String get whatsappLink => _whatsappLink;
+  set whatsappLink(String contactUsLink) {
+    _whatsappLink = contactUsLink;
+    notifyListeners();
+  }
+
+  String _telegramLink = '';
+  String get telegramLink => _telegramLink;
+  set telegramLink(String contactUsLink) {
+    _telegramLink = contactUsLink;
     notifyListeners();
   }
 
@@ -29,8 +37,9 @@ class OfferState extends ChangeNotifier {
   Future<void> loadData() async {
     isLoading = true;
     offers = await OfferRepo.instance.getOffers();
-
-    contactUsLink = await SettingsRepo.instance.getLink();
+    final (link1, link2) = await SettingsRepo.instance.getLink();
+    whatsappLink = link1;
+    telegramLink = link2;
 
     isLoading = false;
   }

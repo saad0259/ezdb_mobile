@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'state/notifications_state.dart';
 import 'theme/app_theme.dart';
 import 'firebase_options.dart';
 import 'screens/auth_handler.dart';
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => HomeState()),
         ChangeNotifierProvider(create: (_) => OfferState()),
         ChangeNotifierProvider(create: (_) => AuthState()),
+        ChangeNotifierProvider(create: (_) => NotificationsState()),
       ],
       child: MaterialApp(
         theme: getTheme(),

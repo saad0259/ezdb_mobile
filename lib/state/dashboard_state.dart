@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class DashboardState extends ChangeNotifier {
-  int _currentIndex = 0;
+  int _currentIndex = kDebugMode ? 1 : 0;
 
   int get currentIndex => _currentIndex;
 

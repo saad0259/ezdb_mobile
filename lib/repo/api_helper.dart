@@ -1,11 +1,14 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 
 // * Dio Start
 enum Method { GET, POST, PATCH, DELETE }
 
-const String baseUrl = 'https://5.9.88.108:5500/api/v1';
+const String baseUrl = kDebugMode && false
+    ? 'http://10.0.2.2:5000/api/v1'
+    : 'https://5.9.88.108:5500/api/v1';
 
 class Request {
   final String _url;
@@ -73,7 +76,7 @@ Future<T> executeSafely<T>(Future<T> Function() function) async {
   } on DioError catch (e) {
     final String errorMessage =
         e.response?.data['message'] ?? 'Something went wrong';
-
+    log('Error: $errorMessage');
     throw errorMessage;
   } catch (e) {
     log('Error: $e');

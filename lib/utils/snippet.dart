@@ -469,6 +469,8 @@ Future<String?> alertInput(BuildContext context, String title, String hint,
 Future<void> customLaunch(String path) async {
   final Uri url = Uri.parse(path);
 
+  log('launching $path');
+
   try {
     await launchUrl(url, mode: LaunchMode.externalApplication);
   } catch (e) {

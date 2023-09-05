@@ -170,4 +170,57 @@ class AuthRepo {
       }
     });
   }
+
+  Future<void> updateFcmToken(String userId, String token) async {
+    return executeSafely(() async {
+      log('token: $token');
+      log('userId: $userId');
+      final data = {
+        'fcmToken': token,
+      };
+      final Request request = Request('${usersPath}/$userId/fcmToken', data);
+      final Response response = await request.patch(baseUrl);
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw response.data['message'];
+      }
+    });
+  }
+
+  Future<List<UserSearch>> getUserSearches(String userId) async {
+    return executeSafely(() async {
+      final Request request = Request('${usersPath}/$userId/searches', null);
+      final Response response = await request.get(baseUrl);
+
+      if (response.statusCode == 200) {
+        final List<UserSearch> userSearches = [];
+        for (final Map<String, dynamic> map in response.data) {
+          userSearches.add(UserSearch.fromMap(map));
+        }
+        return userSearches;
+      } else {
+        throw response.data['message'];
+      }
+    });
+  }
+
+  Future<List<UserMembershipLog>> getUserMembershipLogs(String userId) async {
+    return executeSafely(() async {
+      final Request request =
+          Request('${usersPath}/$userId/membershipLogs', null);
+      final Response response = await request.get(baseUrl);
+
+      if (response.statusCode == 200) {
+        final List<UserMembershipLog> userMembershipLogs = [];
+        for (final Map<String, dynamic> map in response.data) {
+          userMembershipLogs.add(UserMembershipLog.fromMap(map));
+        }
+        return userMembershipLogs;
+      } else {
+        throw response.data['message'];
+      }
+    });
+  }
 }

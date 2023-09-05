@@ -3,6 +3,7 @@ import 'package:mega_petertan343/utils/snippet.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/app_images.dart';
+import '../notification/notification_handler.dart';
 import '../state/auth_state.dart';
 import '../state/dashboard_state.dart';
 import 'home/home_screen.dart';
@@ -50,6 +51,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       } catch (e) {
         // snack(context, e.toString());
       }
+      await handleNotification(context);
       pop(context);
     });
   }
