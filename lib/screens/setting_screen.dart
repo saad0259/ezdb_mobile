@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -54,6 +53,39 @@ class SettingScreen extends StatelessWidget {
                     TextButton(
                       onPressed: () => Navigator.pop(context),
                       child: Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 18),
+          //delete account popup
+          SettingsListItem(
+            title: 'Delete Account',
+            icon: Icons.delete_outline,
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('Delete Account'),
+                  content: Text(
+                      'Are you sure you want to delete your account? This action cannot be undone.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        await customLaunch(
+                            'https://mega-admin-01.web.app/#/removeAccount');
+                        await authState.logout();
+                        dashboardState.reset();
+                        homeState.reset();
+                        popAllAndGoTo(context, AuthHandler());
+                      },
+                      child: Text('Delete'),
                     ),
                   ],
                 ),

@@ -78,7 +78,44 @@ class _PriceScreenState extends State<PriceScreen> {
               ElevatedButton(
                 onPressed: () async {
                   try {
-                    await customLaunch(offerState.contactUsLink);
+                    await showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                              title: const Text('Contact Us'),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (offerState.whatsappLink.isNotEmpty)
+                                    ListTile(
+                                      leading: const Icon(Icons.message),
+                                      title: const Text('WhatsApp Us'),
+                                      onTap: () async {
+                                        try {
+                                          log('whatsapp link: ' +
+                                              offerState.whatsappLink);
+                                          await customLaunch(
+                                              offerState.whatsappLink);
+                                        } catch (e) {
+                                          snack(context, e.toString());
+                                        }
+                                      },
+                                    ),
+                                  if (offerState.telegramLink.isNotEmpty)
+                                    ListTile(
+                                      leading: const Icon(Icons.message),
+                                      title: const Text('Telegram Us'),
+                                      onTap: () async {
+                                        try {
+                                          await customLaunch(
+                                              offerState.telegramLink);
+                                        } catch (e) {
+                                          snack(context, e.toString());
+                                        }
+                                      },
+                                    ),
+                                ],
+                              ),
+                            ));
                   } catch (e) {
                     snack(context, e.toString());
                   }

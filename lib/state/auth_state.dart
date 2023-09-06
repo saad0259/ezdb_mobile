@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/user.dart';
@@ -33,6 +34,13 @@ class AuthState extends ChangeNotifier {
       final UserModel? userdata =
           await AuthRepo.instance.signIn(phone: phone, password: password);
       user = userdata;
+
+      final String? fcmToken = await FirebaseMessaging.instance.getToken();
+
+      await AuthRepo.instance.updateFcmToken(
+        (user?.id ?? '').toString(),
+        fcmToken ?? '',
+      );
 
       await prefs.authToken.save(user?.token ?? '');
     } catch (e) {
