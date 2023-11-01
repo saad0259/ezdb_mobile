@@ -42,12 +42,16 @@ class AuthRepo {
     }
   }
 
-  Future<UserModel?> signIn(
-      {required String phone, required String password}) async {
+  Future<UserModel?> signIn({
+    required String phone,
+    required String password,
+    required String fcmToken,
+  }) async {
     return executeSafely(() async {
       final data = {
         'phone': phone,
         'password': password,
+        'fcmToken': fcmToken,
       };
       final Request request = Request('${authPath}/login', data);
       final Response response = await request.post(baseUrl);
@@ -173,8 +177,6 @@ class AuthRepo {
 
   Future<void> updateFcmToken(String userId, String token) async {
     return executeSafely(() async {
-      log('token: $token');
-      log('userId: $userId');
       final data = {
         'fcmToken': token,
       };
