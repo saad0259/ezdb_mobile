@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 enum Method { GET, POST, PATCH, DELETE }
 
 const String baseUrl = kDebugMode && false
-    ? 'http://10.0.2.2:5000/api/v1'
+    ? 'https://10.0.2.2:5500/api/v1'
     : 'https://5.9.88.108:5500/api/v1';
 
 class Request {

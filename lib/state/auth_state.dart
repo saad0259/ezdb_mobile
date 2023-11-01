@@ -31,16 +31,19 @@ class AuthState extends ChangeNotifier {
 
   Future<void> login(String phone, String password) async {
     try {
-      final UserModel? userdata =
-          await AuthRepo.instance.signIn(phone: phone, password: password);
+      final String fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+
+      final UserModel? userdata = await AuthRepo.instance
+          .signIn(phone: phone, password: password, fcmToken: fcmToken);
       user = userdata;
 
-      final String? fcmToken = await FirebaseMessaging.instance.getToken();
+      // log('userId ${user?.id}');
+      // log('fcmToken $fcmToken');
 
-      await AuthRepo.instance.updateFcmToken(
-        (user?.id ?? '').toString(),
-        fcmToken ?? '',
-      );
+      // await AuthRepo.instance.updateFcmToken(
+      //   (user?.id ?? '').toString(),
+      //   fcmToken ?? '',
+      // );
 
       await prefs.authToken.save(user?.token ?? '');
     } catch (e) {

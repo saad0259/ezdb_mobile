@@ -1,10 +1,16 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
+
+import '../screens/auth_handler.dart';
+import '../state/auth_state.dart';
+import '../state/dashboard_state.dart';
+import '../state/home_state.dart';
+import '../utils/snippet.dart';
 
 class LocalNotification {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
@@ -116,9 +122,28 @@ Future<void> handleNotification(BuildContext context) async {
   await LocalNotification.initialize();
 
   FirebaseMessaging.onMessage.listen((message) async {
-    if (Platform.isAndroid) {
-      await LocalNotification.display(message);
-    }
+    await LocalNotification.display(message);
+    await _logoutNotification(message, context);
   });
-  FirebaseMessaging.onMessageOpenedApp.listen((message) {});
+  FirebaseMessaging.onMessageOpenedApp.listen((message) async {
+    await _logoutNotification(message, context);
+  });
+  FirebaseMessaging.onBackgroundMessage((message) async {
+    await _logoutNotification(message, context);
+  });
+}
+
+Future<void> _logoutNotification(
+    RemoteMessage message, BuildContext context) async {
+  if (message.notification?.title?.contains('Logout') ?? false) {
+    final AuthState authState = Provider.of<AuthState>(context, listen: false);
+    final DashboardState dashboardState =
+        Provider.of<DashboardState>(context, listen: false);
+    final HomeState homeState = Provider.of<HomeState>(context, listen: false);
+
+    await authState.logout();
+    dashboardState.reset();
+    homeState.reset();
+    popAllAndGoTo(context, AuthHandler());
+  }
 }
