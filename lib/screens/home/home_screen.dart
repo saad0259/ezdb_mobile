@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -7,8 +5,10 @@ import 'package:provider/provider.dart';
 import '../../constants/enums.dart';
 import '../../models/member.dart';
 import '../../state/auth_state.dart';
+import '../../state/dashboard_state.dart';
 import '../../state/home_state.dart';
 import '../../utils/snippet.dart';
+import '../auth_handler.dart';
 import 'search_results.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -32,7 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _fetchPage(int pageKey) async {
-    log('pageKey: $pageKey');
     try {
       final AuthState authState =
           Provider.of<AuthState>(context, listen: false);
@@ -235,7 +234,10 @@ class SearchForm extends StatelessWidget {
                                   String userId =
                                       (authState.user?.id ?? '').toString();
                                   authState.updateUser(userId);
-                                } catch (e) {}
+                                } catch (e) {
+                                  await _logoutIfFalseToken(e, context);
+                                  return;
+                                }
                                 pop(context);
                                 pop(context);
                               },
@@ -282,5 +284,21 @@ class SearchForm extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _logoutIfFalseToken(Object e, BuildContext context) async {
+    if ('$e' == 'Invalid auth token') {
+      final AuthState authState =
+          Provider.of<AuthState>(context, listen: false);
+      final DashboardState dashboardState =
+          Provider.of<DashboardState>(context, listen: false);
+      final HomeState homeState =
+          Provider.of<HomeState>(context, listen: false);
+
+      await authState.logout();
+      dashboardState.reset();
+      homeState.reset();
+      popAllAndGoTo(context, AuthHandler());
+    }
   }
 }

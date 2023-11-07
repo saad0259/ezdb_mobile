@@ -128,9 +128,6 @@ Future<void> handleNotification(BuildContext context) async {
   FirebaseMessaging.onMessageOpenedApp.listen((message) async {
     await _logoutNotification(message, context);
   });
-  FirebaseMessaging.onBackgroundMessage((message) async {
-    await _logoutNotification(message, context);
-  });
 }
 
 Future<void> _logoutNotification(

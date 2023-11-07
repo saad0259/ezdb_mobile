@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 
@@ -37,14 +35,6 @@ class AuthState extends ChangeNotifier {
           .signIn(phone: phone, password: password, fcmToken: fcmToken);
       user = userdata;
 
-      // log('userId ${user?.id}');
-      // log('fcmToken $fcmToken');
-
-      // await AuthRepo.instance.updateFcmToken(
-      //   (user?.id ?? '').toString(),
-      //   fcmToken ?? '',
-      // );
-
       await prefs.authToken.save(user?.token ?? '');
     } catch (e) {
       rethrow;
@@ -71,21 +61,6 @@ class AuthState extends ChangeNotifier {
     }
   }
 
-  //stream that updates user data every 5 seconds if user.isExpired
-  Stream<void> get userStream => Stream.periodic(
-        const Duration(seconds: 5),
-        (i) {
-          log('userStream: $i');
-          if (user?.isExpired ?? true) {
-            log('userStream: isExpired');
-            updateUser((user?.id ?? '').toString());
-          } else {
-            log('userStream: isNotExpired');
-            userStream.drain();
-          }
-        },
-      );
-
   Future<void> forgotPassword(String phone) async {
     try {
       await AuthRepo.instance.forgotPassword(phone);
@@ -100,7 +75,6 @@ class AuthState extends ChangeNotifier {
     required String otp,
   }) async {
     try {
-      log('resetPassword');
       await AuthRepo.instance.resetPassword(
         phone: phone,
         password: password,

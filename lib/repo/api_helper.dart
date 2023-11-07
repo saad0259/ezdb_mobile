@@ -3,10 +3,12 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
+import '../utils/prefs.dart';
+
 // * Dio Start
 enum Method { GET, POST, PATCH, DELETE }
 
-const String baseUrl = kDebugMode && false
+const String baseUrl = kDebugMode
     ? 'https://10.0.2.2:5500/api/v1'
     : 'https://5.9.88.108:5500/api/v1';
 
@@ -22,8 +24,16 @@ class Request {
   Future<Response<dynamic>> _sendRequest(Method method, String baseUrl) async {
     final dio = DioSingleton.instance.dio;
     try {
-      return await dio.request(baseUrl + _url,
-          options: Options(method: _getMethodString(method)), data: _body);
+      final String token = await prefs.authToken.load();
+
+      return await dio.request(
+        baseUrl + _url,
+        options: Options(
+          method: _getMethodString(method),
+          headers: {'Authorization': 'Bearer $token'},
+        ),
+        data: _body,
+      );
     } catch (e) {
       log('send request error : $e');
       return Future.error(e);

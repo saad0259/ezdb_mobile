@@ -175,22 +175,6 @@ class AuthRepo {
     });
   }
 
-  Future<void> updateFcmToken(String userId, String token) async {
-    return executeSafely(() async {
-      final data = {
-        'fcmToken': token,
-      };
-      final Request request = Request('${usersPath}/$userId/fcmToken', data);
-      final Response response = await request.patch(baseUrl);
-
-      if (response.statusCode == 200) {
-        return response.data;
-      } else {
-        throw response.data['message'];
-      }
-    });
-  }
-
   Future<List<UserSearch>> getUserSearches(String userId) async {
     return executeSafely(() async {
       final Request request = Request('${usersPath}/$userId/searches', null);

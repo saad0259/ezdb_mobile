@@ -6,6 +6,8 @@ import '../constants/app_images.dart';
 import '../notification/notification_handler.dart';
 import '../state/auth_state.dart';
 import '../state/dashboard_state.dart';
+import '../state/home_state.dart';
+import 'auth_handler.dart';
 import 'home/home_screen.dart';
 import 'notification_screen.dart';
 import 'offer_screen.dart';
@@ -42,16 +44,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final AuthState authState =
-          Provider.of<AuthState>(context, listen: false);
-      getStickyLoader(context);
       try {
+        final AuthState authState =
+            Provider.of<AuthState>(context, listen: false);
+        getStickyLoader(context);
+        await handleNotification(context);
         String userId = (authState.user?.id ?? '').toString();
         await authState.updateUser(userId);
       } catch (e) {
-        // snack(context, e.toString());
+        snack(context, e.toString());
+        await _logoutIfFalseToken(e, context);
+        return;
       }
-      await handleNotification(context);
       pop(context);
     });
   }
@@ -87,17 +91,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     snack(context, 'Info updated', info: true);
                   } catch (e) {
                     snack(context, e.toString());
+                    await _logoutIfFalseToken(e, context);
+                    return;
                   }
                   pop(context);
                 },
                 icon: const Icon(Icons.refresh),
               ),
-              // IconButton(
-              //   onPressed: () {
-              //     replace(context, const LoginScreen());
-              //   },
-              //   icon: const Icon(Icons.logout),
-              // ),
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(
@@ -128,6 +128,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
         );
       },
     );
+  }
+
+  Future<void> _logoutIfFalseToken(Object e, BuildContext context) async {
+    if ('$e' == 'Invalid auth token') {
+      final AuthState authState =
+          Provider.of<AuthState>(context, listen: false);
+      final DashboardState dashboardState =
+          Provider.of<DashboardState>(context, listen: false);
+      final HomeState homeState =
+          Provider.of<HomeState>(context, listen: false);
+
+      await authState.logout();
+      dashboardState.reset();
+      homeState.reset();
+      popAllAndGoTo(context, AuthHandler());
+    }
   }
 }
 

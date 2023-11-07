@@ -1,8 +1,6 @@
 import 'prefs_helper.dart';
 
 Prefs get prefs {
-  // Prefs._prefs;
-
   return Prefs._prefs;
 }
 
