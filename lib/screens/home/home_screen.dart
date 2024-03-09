@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:provider/provider.dart';
@@ -78,34 +79,34 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   SearchForm(controller: _pagingController),
                   const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Search Result:',
-                        style:
-                            Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey,
-                                ),
-                      ),
-                      Consumer<HomeState>(
-                        builder: (context, homeState, child) {
-                          return Text(
-                            '${homeState.dataCount} records found',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey,
-                                ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     // Text(
+                  //     //   'Search Result:',
+                  //     //   style:
+                  //     //       Theme.of(context).textTheme.titleMedium?.copyWith(
+                  //     //             fontWeight: FontWeight.bold,
+                  //     //             color: Colors.grey,
+                  //     //           ),
+                  //     // ),
+                  //     Consumer<HomeState>(
+                  //       builder: (context, homeState, child) {
+                  //         return Text(
+                  //           '${homeState.dataCount} records found',
+                  //           style: Theme.of(context)
+                  //               .textTheme
+                  //               .titleMedium
+                  //               ?.copyWith(
+                  //                 fontWeight: FontWeight.bold,
+                  //                 color: Colors.grey,
+                  //               ),
+                  //         );
+                  //       },
+                  //     ),
+                  //   ],
+                  // ),
+                  // const SizedBox(height: 10),
                 ],
               ),
             ),
@@ -132,54 +133,92 @@ class SearchForm extends StatelessWidget {
     searchController.text = homeState.searchValue;
     postcodeController.text = homeState.postcode;
 
-    return Card(
-      color: Colors.grey.shade300,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Form(
-          key: formKey,
-          child: LayoutBuilder(builder: (context, constraints) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.grey),
-                  ),
-                  child: DropdownButton<SearchType>(
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    value: homeState.searchType,
-                    underline: Container(),
-                    icon: const Icon(Icons.arrow_drop_down),
-                    isExpanded: true,
-                    dropdownColor: Colors.white,
-                    onChanged: (value) {
-                      homeState.setSearchType(value ?? SearchType.ic);
-                    },
-                    items: SearchType.values
-                        .map((e) => DropdownMenuItem<SearchType>(
-                              value: e,
-                              child: Text(e.toString().split('.').last),
-                            ))
-                        .toList(),
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Form(
+        key: formKey,
+        child: LayoutBuilder(builder: (context, constraints) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Container(
+              //   padding:
+              //       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              //   decoration: BoxDecoration(
+              //     color: Colors.white,
+              //     borderRadius: BorderRadius.circular(20),
+              //     border: Border.all(color: Colors.grey),
+              //   ),
+              //   child: DropdownButton<SearchType>(
+              //     style: Theme.of(context).textTheme.bodyLarge,
+              //     value: homeState.searchType,
+              //     underline: Container(),
+              //     icon: const Icon(Icons.arrow_drop_down),
+              //     isExpanded: true,
+              //     dropdownColor: Colors.white,
+              //     onChanged: (value) {
+              //       homeState.setSearchType(value ?? SearchType.ic);
+              //     },
+              //     items: SearchType.values
+              //         .map((e) => DropdownMenuItem<SearchType>(
+              //               value: e,
+              //               child: Text(e.toString().split('.').last),
+              //             ))
+              //         .toList(),
+              //   ),
+              // ),
+              // const SizedBox(height: 20),
+              Card(
+                color: Colors.grey.shade300,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      SearchTypeButton(
+                          searchType: SearchType.name, icon: Icons.person),
+                      SearchTypeButton(
+                          searchType: SearchType.ic,
+                          icon: Icons.card_membership),
+                      SearchTypeButton(
+                          searchType: SearchType.phone, icon: Icons.phone),
+                      SearchTypeButton(
+                          searchType: SearchType.address,
+                          icon: Icons.location_on_outlined),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 20),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: searchController,
+                validator: mandatoryValidator,
+                onChanged: (value) {
+                  homeState.searchValue = value;
+                },
+                decoration: InputDecoration(
+                  hintText: 'Enter ${homeState.searchType.name.toLowerCase()}',
+                  fillColor: Colors.white,
+                  filled: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              if (homeState.searchType == SearchType.address)
                 TextFormField(
-                  controller: searchController,
+                  controller: postcodeController,
                   validator: mandatoryValidator,
                   onChanged: (value) {
-                    homeState.searchValue = value;
+                    homeState.postcode = value;
                   },
                   decoration: const InputDecoration(
-                    hintText: 'Type here',
+                    hintText: 'Postcode',
                     fillColor: Colors.white,
                     filled: true,
                     border: OutlineInputBorder(
@@ -189,99 +228,79 @@ class SearchForm extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                if (homeState.searchType == SearchType.address)
-                  TextFormField(
-                    controller: postcodeController,
-                    validator: mandatoryValidator,
-                    onChanged: (value) {
-                      homeState.postcode = value;
-                    },
-                    decoration: const InputDecoration(
-                      hintText: 'Postcode',
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20),
-                        ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  //close keypad
+                  FocusScope.of(context).unfocus();
+                  final AuthState authState =
+                      Provider.of<AuthState>(context, listen: false);
+
+                  if (authState.user?.isExpired ?? false) {
+                    return showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Expired'),
+                        content: const Text(
+                            'Your membership has expired. Please See offers and renew your membership'),
+                        actions: [
+                          TextButton(
+                            onPressed: () async {
+                              final AuthState authState =
+                                  Provider.of<AuthState>(context,
+                                      listen: false);
+                              getStickyLoader(context);
+                              try {
+                                String userId =
+                                    (authState.user?.id ?? '').toString();
+                                authState.updateUser(userId);
+                              } catch (e) {
+                                await _logoutIfFalseToken(e, context);
+                                return;
+                              }
+                              pop(context);
+                              pop(context);
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () async {
-                    //close keypad
-                    FocusScope.of(context).unfocus();
-                    final AuthState authState =
-                        Provider.of<AuthState>(context, listen: false);
+                    );
+                  }
 
-                    if (authState.user?.isExpired ?? false) {
-                      return showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Expired'),
-                          content: const Text(
-                              'Your membership has expired. Please See offers and renew your membership'),
-                          actions: [
-                            TextButton(
-                              onPressed: () async {
-                                final AuthState authState =
-                                    Provider.of<AuthState>(context,
-                                        listen: false);
-                                getStickyLoader(context);
-                                try {
-                                  String userId =
-                                      (authState.user?.id ?? '').toString();
-                                  authState.updateUser(userId);
-                                } catch (e) {
-                                  await _logoutIfFalseToken(e, context);
-                                  return;
-                                }
-                                pop(context);
-                                pop(context);
-                              },
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-
-                    if (formKey.currentState?.validate() ?? false) {
-                      homeState.isLoading = true;
-                      push(context, SearchResultsScreen());
-                      // try {
-                      //   final HomeState homeState =
-                      //       Provider.of<HomeState>(context, listen: false);
-                      //   homeState.currentPage = 0;
-                      //   final List<MemberModel> newItems =
-                      //       await homeState.searchMembers();
-
-                      //   final isLastPage =
-                      //       newItems.length < homeState.currentPage;
-                      //   if (isLastPage) {
-                      //     controller.appendLastPage(newItems);
-                      //   } else {
-                      //     final nextPageKey = 1;
-                      //     controller.appendPage(newItems, nextPageKey);
-                      //   }
-                      // } catch (error) {
-                      //   controller.error = error;
-                      // }
-                      homeState.isLoading = false;
-                    }
-                    //   homeState.searchValue = searchController.text;
+                  if (formKey.currentState?.validate() ?? false) {
+                    homeState.isLoading = true;
+                    push(context, SearchResultsScreen());
+                    // try {
+                    //   final HomeState homeState =
+                    //       Provider.of<HomeState>(context, listen: false);
                     //   homeState.currentPage = 0;
-                    //   homeState.searchMembers();
-                    //   // await controller.navigateToPage(0);
-                  },
-                  child: const Text('Search'),
-                ),
-              ],
-            );
-          }),
-        ),
+                    //   final List<MemberModel> newItems =
+                    //       await homeState.searchMembers();
+
+                    //   final isLastPage =
+                    //       newItems.length < homeState.currentPage;
+                    //   if (isLastPage) {
+                    //     controller.appendLastPage(newItems);
+                    //   } else {
+                    //     final nextPageKey = 1;
+                    //     controller.appendPage(newItems, nextPageKey);
+                    //   }
+                    // } catch (error) {
+                    //   controller.error = error;
+                    // }
+                    homeState.isLoading = false;
+                  }
+                  //   homeState.searchValue = searchController.text;
+                  //   homeState.currentPage = 0;
+                  //   homeState.searchMembers();
+                  //   // await controller.navigateToPage(0);
+                },
+                child: const Text('Search'),
+              ),
+            ],
+          );
+        }),
       ),
     );
   }
@@ -300,5 +319,31 @@ class SearchForm extends StatelessWidget {
       homeState.reset();
       popAllAndGoTo(context, AuthHandler());
     }
+  }
+}
+
+class SearchTypeButton extends StatelessWidget {
+  const SearchTypeButton({
+    Key? key,
+    required this.icon,
+    required this.searchType,
+  }) : super(key: key);
+
+  final IconData icon;
+  final SearchType searchType;
+
+  @override
+  Widget build(BuildContext context) {
+    final HomeState homeState = Provider.of<HomeState>(context);
+    return Expanded(
+      child: IconButton(
+        onPressed: () => homeState.setSearchType(searchType),
+        icon: Icon(icon,
+            size: homeState.searchType == searchType ? 30 : 25,
+            color: homeState.searchType == searchType
+                ? Color(0xffff7518)
+                : Color(0xff6F6F6F)),
+      ),
+    );
   }
 }

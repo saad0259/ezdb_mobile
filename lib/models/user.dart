@@ -3,35 +3,30 @@ class UserModel {
   final String phone;
   final DateTime memberShipExpiry;
   final String token;
+  final DateTime createdAt;
+  final bool usedFreeTrial;
 
   UserModel({
     required this.id,
     required this.phone,
     required this.memberShipExpiry,
     required this.token,
-  });
+    required this.usedFreeTrial,
+  }) : createdAt = DateTime.now();
 
   bool get isExpired => memberShipExpiry.isBefore(DateTime.now());
 
-  factory UserModel.fromMap(Map<String, dynamic> data) {
-    return UserModel(
-      id: int.tryParse(data['id'].toString()) ?? 0,
-      phone: data['phone'] ?? '',
-      token: data['token'] ?? '',
-      memberShipExpiry: data['membershipExpiry'] == null
-          ? DateTime.now()
-          : DateTime.parse(data['membershipExpiry']),
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'phone': phone,
-      'token': token,
-      'membershipExpiry': memberShipExpiry.toIso8601String(),
-    };
-  }
+  UserModel.fromMap(Map<String, dynamic> data)
+      : id = int.tryParse(data['id'].toString()) ?? 0,
+        phone = data['phone'] ?? '',
+        token = data['token'] ?? '',
+        memberShipExpiry = data['membershipExpiry'] == null
+            ? DateTime.now()
+            : DateTime.parse(data['membershipExpiry']),
+        createdAt = data['createdAt'] == null
+            ? DateTime.now()
+            : DateTime.parse(data['createdAt']),
+        usedFreeTrial = data['usedFreeTrial'] ?? true;
 }
 
 class UserSearch {

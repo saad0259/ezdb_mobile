@@ -27,7 +27,7 @@ class MemberModel {
       tel1: data['tel1'] ?? 'N/A',
       tel2: data['tel2'] ?? 'N/A',
       tel3: data['tel3'] ?? 'N/A',
-      postcode: data['postcode'] ?? 'N/A',
+      postcode: data['postcode'] ?? '',
       address: data['address'] ?? 'N/A',
     );
   }

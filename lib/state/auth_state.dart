@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 
@@ -12,6 +15,8 @@ class AuthState extends ChangeNotifier {
     _isLoading = value;
     notifyListeners();
   }
+
+  Timer? timer;
 
   bool _passwordVisible = false;
   bool get passwordVisible => _passwordVisible;
@@ -61,6 +66,23 @@ class AuthState extends ChangeNotifier {
     }
   }
 
+  void startUpdatingUser(String id) {
+    log('starting user stream');
+    if (timer?.isActive ?? false) {
+      // log('shutting down old stream');
+      timer?.cancel();
+    }
+    timer = Timer.periodic(Duration(seconds: 5), (Timer t) async {
+      // log('userStream');
+      try {
+        await updateUser(id);
+      } catch (e) {
+        log('userStream error');
+        log(e.toString());
+      }
+    });
+  }
+
   Future<void> forgotPassword(String phone) async {
     try {
       await AuthRepo.instance.forgotPassword(phone);
@@ -88,6 +110,11 @@ class AuthState extends ChangeNotifier {
   Future<void> logout() async {
     try {
       await prefs.authToken.clear();
+      await prefs.showedInitialOffer.clear();
+      //stope userStream
+      timer?.cancel();
+      log('userStream stopped');
+
       reset();
     } catch (e) {
       throw e.toString();

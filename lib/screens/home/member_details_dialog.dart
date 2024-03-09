@@ -18,7 +18,7 @@ class MemberDetailsDialog extends StatelessWidget {
         ),
         title: Center(
           child: Text(
-            'Member Details',
+            member.name,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -26,72 +26,98 @@ class MemberDetailsDialog extends StatelessWidget {
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            DetailItem(
-              title: 'Name',
-              value: member.name,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.info),
+                    const SizedBox(width: 10),
+                    Text(
+                      member.ic,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(color: Colors.grey),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(Icons.phone),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      member.tel1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            DetailItem(
-              title: 'Address',
-              value: member.address,
+            const SizedBox(height: 10),
+            Row(
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SizedBox(width: 20),
+                const Icon(
+                  Icons.home,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    member.address +
+                        (member.postcode.isNotEmpty
+                            ? ', ${member.postcode}'
+                            : ''),
+                    // textAlign: TextAlign.end,
+                    softWrap: true,
+                    // overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(color: Colors.grey),
+                  ),
+                ),
+              ],
             ),
-            DetailItem(
-              title: 'Postcode',
-              value: member.postcode,
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                const SizedBox(width: 20),
+                Icon(Icons.phone),
+                const SizedBox(width: 10),
+                Text(
+                  member.tel2,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(color: Colors.grey),
+                ),
+              ],
             ),
-            DetailItem(
-              title: 'Tel 1',
-              value: member.tel1,
-            ),
-            DetailItem(
-              title: 'Tel 2',
-              value: member.tel2,
-            ),
-            DetailItem(
-              title: 'Tel 3',
-              value: member.tel3,
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                const SizedBox(width: 20),
+                Icon(Icons.phone),
+                const SizedBox(width: 10),
+                Text(
+                  member.tel3,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(color: Colors.grey),
+                ),
+              ],
             ),
           ],
         ));
-  }
-}
-
-class DetailItem extends StatelessWidget {
-  const DetailItem({
-    super.key,
-    required this.title,
-    required this.value,
-  });
-
-  final String title;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 5),
-        Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: Text(
-            value,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Colors.grey,
-                ),
-          ),
-        ),
-        const Divider(),
-      ],
-    );
   }
 }

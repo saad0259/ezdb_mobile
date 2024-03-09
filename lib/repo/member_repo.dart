@@ -29,7 +29,7 @@ class MemberRepo {
       } else {
         throw Exception('Failed to load members');
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       log('Dio Error: ${e.response?.data}');
       throw Exception(e.message);
     }

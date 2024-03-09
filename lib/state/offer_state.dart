@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 import '../models/offer_model.dart';
@@ -36,10 +38,14 @@ class OfferState extends ChangeNotifier {
 
   Future<void> loadData() async {
     isLoading = true;
-    offers = await OfferRepo.instance.getOffers();
-    final (link1, link2) = await SettingsRepo.instance.getLink();
-    whatsappLink = link1;
-    telegramLink = link2;
+    try {
+      offers = await OfferRepo.instance.getOffers();
+      final (link1, link2) = await SettingsRepo.instance.getLink();
+      whatsappLink = link1;
+      telegramLink = link2;
+    } catch (e) {
+      log(e.toString());
+    }
 
     isLoading = false;
   }

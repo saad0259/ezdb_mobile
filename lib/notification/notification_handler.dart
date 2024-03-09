@@ -38,7 +38,7 @@ class LocalNotification {
     await _notificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
-        ?.requestPermission();
+        ?.requestNotificationsPermission();
 
     InitializationSettings initializationSettings = InitializationSettings(
         android: AndroidInitializationSettings('@mipmap/launcher_icon'),

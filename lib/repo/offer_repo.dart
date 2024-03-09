@@ -6,6 +6,7 @@ import 'api_helper.dart';
 class OfferRepo {
   static final OfferRepo instance = OfferRepo();
   final String offerPath = '/offers';
+  final String paymentPath = '/payments';
   Future<List<OfferModel>> getOffers() {
     return executeSafely(() async {
       final Request request = Request(offerPath, null);

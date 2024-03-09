@@ -8,9 +8,9 @@ import '../utils/prefs.dart';
 // * Dio Start
 enum Method { GET, POST, PATCH, DELETE }
 
-const String baseUrl = kDebugMode
-    ? 'https://10.0.2.2:5500/api/v1'
-    : 'https://5.9.88.108:5500/api/v1';
+const String baseUrl = kDebugMode && false
+    ? 'https://192.168.10.12:5501/api/v1'
+    : 'https://5.9.88.108:5501/api/v1';
 
 class Request {
   final String _url;
@@ -24,7 +24,7 @@ class Request {
   Future<Response<dynamic>> _sendRequest(Method method, String baseUrl) async {
     final dio = DioSingleton.instance.dio;
     try {
-      final String token = await prefs.authToken.load();
+      final String token = await prefs.authToken.load() ?? '';
 
       return await dio.request(
         baseUrl + _url,
@@ -69,7 +69,7 @@ class DioSingleton {
   static DioSingleton get instance => _instance;
 
   DioSingleton._internal() {
-    const Duration timeout = Duration(seconds: 30);
+    const Duration timeout = Duration(seconds: 60);
     dio = Dio(BaseOptions(
       responseType: ResponseType.json,
       connectTimeout: timeout,
@@ -83,7 +83,7 @@ class DioSingleton {
 Future<T> executeSafely<T>(Future<T> Function() function) async {
   try {
     return await function();
-  } on DioError catch (e) {
+  } on DioException catch (e) {
     final String errorMessage =
         e.response?.data['message'] ?? 'Something went wrong';
     log('Error: $errorMessage');

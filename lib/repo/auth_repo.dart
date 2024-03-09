@@ -28,7 +28,7 @@ class AuthRepo {
       } else {
         throw response.data['message'];
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       // debugPrint(e.response?.data.toString());
       final String errorMessage =
           e.response?.data['message'] ?? 'Something went wrong';
@@ -81,7 +81,7 @@ class AuthRepo {
       } else {
         throw response.data['message'];
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       // debugPrint(e.response?.data.toString());
       final String errorMessage =
           e.response?.data['message'] ?? 'Something went wrong';
@@ -109,7 +109,7 @@ class AuthRepo {
       } else {
         throw response.data['message'];
       }
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       // debugPrint(e.response?.data.toString());
       final String errorMessage =
           e.response?.data['message'] ?? 'Something went wrong';
