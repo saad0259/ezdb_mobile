@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:mega_petertan343/screens/auth_handler.dart';
+import 'package:ezdb_mobile/screens/auth_handler.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants/enums.dart';

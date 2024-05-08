@@ -1,4 +1,4 @@
-package com.example.mega_petertan343
+package com.ezdb.user
 
 import io.flutter.embedding.android.FlutterActivity
 

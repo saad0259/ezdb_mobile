@@ -5,18 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "mega_petertan343",
+            "name": "ezdb_mobile",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "mega_petertan343 (profile mode)",
+            "name": "ezdb_mobile (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "mega_petertan343 (release mode)",
+            "name": "ezdb_mobile (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"

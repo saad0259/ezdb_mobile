@@ -50,21 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB5a-JMQ4oOqrxlYqXheUU0WYJCKPz7-oc',
-    appId: '1:181211131869:android:30182273652321e4b65034',
-    messagingSenderId: '181211131869',
-    projectId: 'mega-app-1ea75',
-    storageBucket: 'mega-app-1ea75.appspot.com',
+    apiKey: 'AIzaSyBehrRCXzDqnpE8CPMZIdjOkAzIoHGrrFM',
+    appId: '1:536114427156:android:0e952e9951ecb006c53e01',
+    messagingSenderId: '536114427156',
+    projectId: 'myapp-16523',
+    storageBucket: 'myapp-16523.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCK2NT44I7ZH2PbgMWdomOJLQXLwBg_Upw',
-    appId: '1:181211131869:ios:8032b2a68c39b349b65034',
-    messagingSenderId: '181211131869',
-    projectId: 'mega-app-1ea75',
-    storageBucket: 'mega-app-1ea75.appspot.com',
-    androidClientId: '181211131869-9r4gkerthc6gqfnl8fvthj10br6t9s30.apps.googleusercontent.com',
-    iosClientId: '181211131869-vuj4jv4tgnek1v40uie6mq37g9070lfq.apps.googleusercontent.com',
-    iosBundleId: 'com.example.megaPetertan343',
+    apiKey: 'AIzaSyA6zWlU3JoAmP1WtDDbwxgLbIo7m8QKVtU',
+    appId: '1:536114427156:ios:8796ffc7241b0d46c53e01',
+    messagingSenderId: '536114427156',
+    projectId: 'myapp-16523',
+    storageBucket: 'myapp-16523.appspot.com',
+    iosBundleId: 'com.ezdb.user',
   );
 }

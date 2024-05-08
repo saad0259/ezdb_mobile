@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mega_petertan343/screens/dashboard.dart';
+import 'package:ezdb_mobile/screens/dashboard.dart';
 
 import '../utils/prefs.dart';
 import 'auth/login_screen.dart';

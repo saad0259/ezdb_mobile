@@ -1,4 +1,4 @@
-# mega_petertan343
+# ezdb_mobile
 
 A new Flutter project.
 

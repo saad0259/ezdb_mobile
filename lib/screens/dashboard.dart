@@ -2,8 +2,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:mega_petertan343/theme/app_theme.dart';
-import 'package:mega_petertan343/utils/snippet.dart';
+import 'package:ezdb_mobile/theme/app_theme.dart';
+import 'package:ezdb_mobile/utils/snippet.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/app_images.dart';
