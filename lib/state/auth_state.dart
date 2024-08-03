@@ -34,7 +34,12 @@ class AuthState extends ChangeNotifier {
 
   Future<void> login(String phone, String password) async {
     try {
-      final String fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+      String fcmToken = '';
+      try {
+        fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+      } catch (e) {
+        log('fcm error: $e');
+      }
 
       final UserModel? userdata = await AuthRepo.instance
           .signIn(phone: phone, password: password, fcmToken: fcmToken);
