@@ -8,7 +8,7 @@ import '../utils/prefs.dart';
 // * Dio Start
 enum Method { GET, POST, PATCH, DELETE }
 
-const String baseUrl = kDebugMode && false
+const String baseUrl = kDebugMode
     ? 'https://192.168.10.12:5501/api/v1'
     : 'https://5.9.88.108:5501/api/v1';
 

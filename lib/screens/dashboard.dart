@@ -1,15 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:developer';
-
-import 'package:flutter/material.dart';
 import 'package:ezdb_mobile/theme/app_theme.dart';
 import 'package:ezdb_mobile/utils/snippet.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../constants/app_images.dart';
 import '../models/offer_model.dart';
 import '../models/user.dart';
-import '../notification/notification_handler.dart';
+import '../services/firebase_notification_services.dart';
 import '../state/auth_state.dart';
 import '../state/dashboard_state.dart';
 import '../state/home_state.dart';
@@ -59,7 +57,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         final AuthState authState =
             Provider.of<AuthState>(context, listen: false);
         getStickyLoader(context);
-        await handleNotification(context);
+        // await PushNotification.instance.initialize();
+        handlePushNotifications(context);
+        // await handleNotification(context);
         String userId = (authState.user?.id ?? '').toString();
         // assert(authState.user != null);
         // log('init state update user');
@@ -70,15 +70,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         bool showedInitialOffer =
             await prefs.showedInitialOffer.load() ?? false;
 
-        log('showedInitialOffer: $showedInitialOffer');
-
         if (!showedInitialOffer &&
             authState.user!.isExpired &&
             offerState.offers.isNotEmpty) {
           await prefs.showedInitialOffer.save(true);
           await prefs.showedInitialOffer.load() ?? false;
 
-          log('2 showedInitialOffer: $showedInitialOffer');
           await showDialog(
               // useSafeArea: true,
               // barrierDismissible: false,

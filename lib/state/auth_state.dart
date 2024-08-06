@@ -36,7 +36,11 @@ class AuthState extends ChangeNotifier {
     try {
       String fcmToken = '';
       try {
+        //apns token
+
         fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+        log('fcm token: $fcmToken');
+        debugPrint('fcm token: $fcmToken');
       } catch (e) {
         log('fcm error: $e');
       }
@@ -46,6 +50,8 @@ class AuthState extends ChangeNotifier {
       user = userdata;
 
       await prefs.authToken.save(user?.token ?? '');
+      await prefs.userId.save(user?.id.toString());
+      await prefs.fcmToken.save(fcmToken);
     } catch (e) {
       rethrow;
     }
@@ -57,6 +63,7 @@ class AuthState extends ChangeNotifier {
       user = userdata;
 
       await prefs.authToken.save(user?.token ?? '');
+      await prefs.userId.save(user?.id.toString());
     } catch (e) {
       rethrow;
     }
@@ -72,7 +79,7 @@ class AuthState extends ChangeNotifier {
   }
 
   void startUpdatingUser(String id) {
-    log('starting user stream');
+    // log('starting user stream');
     if (timer?.isActive ?? false) {
       // log('shutting down old stream');
       timer?.cancel();

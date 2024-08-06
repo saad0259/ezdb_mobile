@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../services/firebase_notification_services.dart';
 import '../state/auth_state.dart';
 import '../state/dashboard_state.dart';
 import '../state/home_state.dart';
@@ -83,6 +84,8 @@ class SettingScreen extends StatelessWidget {
                         await authState.logout();
                         dashboardState.reset();
                         homeState.reset();
+                        PushNotification.instance.unSubscribeTopics(
+                            (authState.user?.id ?? '').toString());
                         popAllAndGoTo(context, AuthHandler());
                       },
                       child: Text('Delete'),

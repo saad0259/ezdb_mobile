@@ -4,23 +4,20 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'state/notifications_state.dart';
-import 'theme/app_theme.dart';
-import 'firebase_options.dart';
 import 'screens/auth_handler.dart';
 import 'service_locator.dart';
 import 'state/auth_state.dart';
 import 'state/dashboard_state.dart';
 import 'state/general_state.dart';
 import 'state/home_state.dart';
+import 'state/notifications_state.dart';
 import 'state/offer_state.dart';
 import 'state/otp_state.dart';
+import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp();
   await setupLocator();
   HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
