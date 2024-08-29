@@ -14,7 +14,7 @@ class RegisterScreen extends StatelessWidget {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String _phoneNumber = '';
+  String _phoneNumber = '60';
   final TextEditingController _passwordController = TextEditingController();
 
   @override
@@ -23,9 +23,21 @@ class RegisterScreen extends StatelessWidget {
       _phoneNumber = '60101231234';
       _passwordController.text = 'Lahore123@';
     }
-    return SafeArea(
-      child: Scaffold(
-        body: SingleChildScrollView(
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            replace(context, LoginScreen());
+          },
+        ),
+      ),
+      body: PopScope(
+        canPop: false,
+        onPopInvoked: (_) {
+          replace(context, LoginScreen());
+        },
+        child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 20,

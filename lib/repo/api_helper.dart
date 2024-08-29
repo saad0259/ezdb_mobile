@@ -9,7 +9,7 @@ import '../utils/prefs.dart';
 enum Method { GET, POST, PATCH, DELETE }
 
 const String baseUrl = kDebugMode
-    ? 'https://192.168.10.12:5501/api/v1'
+    ? 'https://10.0.2.2:5501/api/v1'
     : 'https://5.9.88.108:5501/api/v1';
 
 class Request {

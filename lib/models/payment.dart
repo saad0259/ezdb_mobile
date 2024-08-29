@@ -25,11 +25,12 @@ class PaymentModel {
         createdAt = DateTime.parse(json['createdAt']),
         isFreeTrial = json['isFreeTrial'] ?? false;
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap(String phone) {
     return {
       'userId': userId,
       'offer': offer.toMap(),
       'status': 'pending',
+      'phone': phone,
       'createdAt': createdAt.toIso8601String(),
     };
   }

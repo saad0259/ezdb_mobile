@@ -1,4 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:ezdb_mobile/theme/app_theme.dart';
 import 'package:ezdb_mobile/utils/snippet.dart';
 import 'package:flutter/material.dart';
@@ -60,35 +63,49 @@ class _DashboardScreenState extends State<DashboardScreen> {
         // await PushNotification.instance.initialize();
         handlePushNotifications(context);
         // await handleNotification(context);
-        String userId = (authState.user?.id ?? '').toString();
+        String userId = await prefs.userId.load() ?? '';
         // assert(authState.user != null);
         // log('init state update user');
         // await authState.updateUser(userId);
-        authState.startUpdatingUser(userId);
+        startUpdatingUser(context, userId);
         await offerState.loadData();
 
         bool showedInitialOffer =
             await prefs.showedInitialOffer.load() ?? false;
 
         if (!showedInitialOffer &&
-            authState.user!.isExpired &&
+            (authState.user?.isExpired ?? false) &&
             offerState.offers.isNotEmpty) {
           await prefs.showedInitialOffer.save(true);
           await prefs.showedInitialOffer.load() ?? false;
 
           await showDialog(
-              // useSafeArea: true,
-              // barrierDismissible: false,
               context: context,
               builder: (context) => InitialOfferWidget(authState.user));
         }
       } catch (e) {
-        snack(context, e.toString());
+        snack(context, 'error: $e');
         await _logoutIfFalseToken(e, context);
         pop(context);
         return;
       }
       pop(context);
+    });
+  }
+
+  void startUpdatingUser(BuildContext context, String id) {
+    final AuthState state = Provider.of<AuthState>(context, listen: false);
+    if (state.timer?.isActive ?? false) {
+      state.timer?.cancel();
+    }
+    state.timer = Timer.periodic(Duration(seconds: 5), (Timer t) async {
+      try {
+        await state.updateUser(id);
+      } catch (e) {
+        log('userStream error');
+        log(e.toString());
+        await _logoutIfFalseToken(e, context);
+      }
     });
   }
 

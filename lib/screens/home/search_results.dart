@@ -93,37 +93,33 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       appBar: AppBar(
         title: Text('Records'),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding:
-              const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 0),
-          child: Consumer<HomeState>(
-            builder: (context, homeState, child) {
-              return homeState.isLoading
-                  ? shimmerTableEffect()
-                  : homeState.members.isEmpty
-                      ? const Center(
-                          child: Text('No data found'),
-                        )
-                      : PagedListView<int, MemberModel>.separated(
-                          scrollController: _scrollController,
-                          pagingController: _pagingController,
-                          shrinkWrap: true,
-                          // physics: const NeverScrollableScrollPhysics(),
-                          // scrollController: _scrollController,
-                          separatorBuilder: (context, index) => const SizedBox(
-                            height: 10,
+      body: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 0),
+        child: Consumer<HomeState>(
+          builder: (context, homeState, child) {
+            return homeState.isLoading
+                ? shimmerTableEffect()
+                : homeState.members.isEmpty
+                    ? const Center(
+                        child: Text('No data found'),
+                      )
+                    : PagedListView<int, MemberModel>.separated(
+                        scrollController: _scrollController,
+                        pagingController: _pagingController,
+                        shrinkWrap: true,
+                        // physics: const NeverScrollableScrollPhysics(),
+                        // scrollController: _scrollController,
+                        separatorBuilder: (context, index) => const SizedBox(
+                          height: 10,
+                        ),
+                        // physics: const NeverScrollableScrollPhysics(),
+                        builderDelegate: PagedChildBuilderDelegate<MemberModel>(
+                          itemBuilder: (context, item, index) => MemberWidget(
+                            member: item,
                           ),
-                          // physics: const NeverScrollableScrollPhysics(),
-                          builderDelegate:
-                              PagedChildBuilderDelegate<MemberModel>(
-                            itemBuilder: (context, item, index) => MemberWidget(
-                              member: item,
-                            ),
-                          ),
-                        );
-            },
-          ),
+                        ),
+                      );
+          },
         ),
       ),
     );

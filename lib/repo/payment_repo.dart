@@ -7,9 +7,9 @@ class PaymentRepo {
   static final PaymentRepo instance = PaymentRepo();
   final String paymentPath = '/payments';
 
-  Future<String> createPaymentIntent(PaymentModel payment) {
+  Future<String> createPaymentIntent(PaymentModel payment, String phone) {
     return executeSafely(() async {
-      final Request request = Request(paymentPath, payment.toMap());
+      final Request request = Request(paymentPath, payment.toMap(phone));
       final Response response = await request.post(baseUrl);
 
       return response.data['url'] ?? '';

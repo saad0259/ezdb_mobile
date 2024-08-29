@@ -6,6 +6,7 @@ import '../../constants/app_images.dart';
 import '../../state/auth_state.dart';
 import '../../utils/snippet.dart';
 import '../auth_handler.dart';
+import 'login_screen.dart';
 import 'register_screen.dart';
 
 class ResetPasswordScreen extends StatelessWidget {
@@ -19,7 +20,11 @@ class ResetPasswordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authState = Provider.of<AuthState>(context, listen: false);
-    return SafeArea(
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) {
+        replace(context, LoginScreen());
+      },
       child: Scaffold(
         body: SingleChildScrollView(
           child: Padding(

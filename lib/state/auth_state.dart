@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/user.dart';
 import '../repo/auth_repo.dart';
+import '../services/firebase_notification_services.dart';
 import '../utils/prefs.dart';
 
 class AuthState extends ChangeNotifier {
@@ -34,13 +36,19 @@ class AuthState extends ChangeNotifier {
 
   Future<void> login(String phone, String password) async {
     try {
-      String fcmToken = '';
+      String fcmToken = 'abc';
       try {
         //apns token
-
-        fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
-        log('fcm token: $fcmToken');
+        if (Platform.isIOS) {
+          final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+          if (apnsToken != null) {
+            fcmToken = apnsToken.toString();
+          }
+        } else {
+          fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+        }
         debugPrint('fcm token: $fcmToken');
+        log('fcm token: $fcmToken');
       } catch (e) {
         log('fcm error: $e');
       }
@@ -78,23 +86,6 @@ class AuthState extends ChangeNotifier {
     }
   }
 
-  void startUpdatingUser(String id) {
-    // log('starting user stream');
-    if (timer?.isActive ?? false) {
-      // log('shutting down old stream');
-      timer?.cancel();
-    }
-    timer = Timer.periodic(Duration(seconds: 5), (Timer t) async {
-      // log('userStream');
-      try {
-        await updateUser(id);
-      } catch (e) {
-        log('userStream error');
-        log(e.toString());
-      }
-    });
-  }
-
   Future<void> forgotPassword(String phone) async {
     try {
       await AuthRepo.instance.forgotPassword(phone);
@@ -123,6 +114,7 @@ class AuthState extends ChangeNotifier {
     try {
       await prefs.authToken.clear();
       await prefs.showedInitialOffer.clear();
+      PushNotification.instance.unSubscribeTopics((user?.id ?? '').toString());
       //stope userStream
       timer?.cancel();
       log('userStream stopped');

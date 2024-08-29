@@ -117,7 +117,10 @@ Future<void> initiatePayment(BuildContext context, OfferModel offer) async {
       userId: authState.user!.id,
     );
     final String? paymentSessionUrl =
-        await PaymentRepo.instance.createPaymentIntent(payment);
+        await PaymentRepo.instance.createPaymentIntent(
+      payment,
+      authState.user!.phone,
+    );
 
     if (offer.isFreeTrial) {
       snack(context, 'Free Trial Activated', info: true);

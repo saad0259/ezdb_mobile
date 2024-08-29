@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../constants/enums.dart';
 import '../../models/member.dart';
+import '../../services/firebase_notification_services.dart';
 import '../../state/auth_state.dart';
 import '../../state/dashboard_state.dart';
 import '../../state/home_state.dart';
@@ -317,6 +318,9 @@ class SearchForm extends StatelessWidget {
       await authState.logout();
       dashboardState.reset();
       homeState.reset();
+      PushNotification.instance
+          .unSubscribeTopics((authState.user?.id ?? '').toString());
+
       popAllAndGoTo(context, AuthHandler());
     }
   }
