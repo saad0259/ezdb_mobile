@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 
 import '../models/member.dart';
 import 'api_helper.dart';
+import 'repo_constants.dart';
 
 class MemberRepo {
   static final MemberRepo instance = MemberRepo();

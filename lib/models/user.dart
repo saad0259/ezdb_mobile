@@ -26,7 +26,9 @@ class UserModel {
         createdAt = data['createdAt'] == null
             ? DateTime.now()
             : DateTime.parse(data['createdAt']),
-        usedFreeTrial = data['usedFreeTrial'] ?? true;
+        //TODO:fix this
+        // usedFreeTrial = data['usedFreeTrial'] ?? true;
+        usedFreeTrial = false;
 }
 
 class UserSearch {

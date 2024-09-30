@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../models/payment.dart';
 import 'api_helper.dart';
+import 'repo_constants.dart';
 
 class PaymentRepo {
   static final PaymentRepo instance = PaymentRepo();

@@ -1,16 +1,11 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 import '../utils/prefs.dart';
 
 // * Dio Start
 enum Method { GET, POST, PATCH, DELETE }
-
-const String baseUrl = kDebugMode
-    ? 'https://10.0.2.2:5501/api/v1'
-    : 'https://5.9.88.108:5501/api/v1';
 
 class Request {
   final String _url;

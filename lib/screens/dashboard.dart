@@ -191,16 +191,8 @@ class InitialOfferWidget extends StatelessWidget {
         DateUtils.dateOnly(user?.memberShipExpiry ?? DateTime.now());
 
     final offerList = offerState.offers;
-    if (expiryDate.compareTo(creationDate) == 0) {
-      final OfferModel freeOffer = OfferModel(
-        uid: '10101',
-        days: 7,
-        price: 0,
-        isActive: true,
-        isFreeTrial: true,
-        name: 'Free Trial',
-      );
-      offerList.add(freeOffer);
+    if (expiryDate.compareTo(creationDate) != 0) {
+      offerList.removeWhere((element) => element.isFreeTrial);
     }
 
     return AlertDialog(

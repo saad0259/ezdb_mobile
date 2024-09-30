@@ -18,6 +18,7 @@ class OfferState extends ChangeNotifier {
   String _whatsappLink = '';
   String get whatsappLink => _whatsappLink;
   set whatsappLink(String contactUsLink) {
+    log('whatsappLink: $contactUsLink');
     _whatsappLink = contactUsLink;
     notifyListeners();
   }
@@ -25,6 +26,7 @@ class OfferState extends ChangeNotifier {
   String _telegramLink = '';
   String get telegramLink => _telegramLink;
   set telegramLink(String contactUsLink) {
+    log('telegramLink: $contactUsLink');
     _telegramLink = contactUsLink;
     notifyListeners();
   }
@@ -40,9 +42,15 @@ class OfferState extends ChangeNotifier {
     isLoading = true;
     try {
       offers = await OfferRepo.instance.getOffers();
-      final (link1, link2) = await SettingsRepo.instance.getLink();
+      final urlStream = SettingsRepo.instance.watchUrl();
+      final (link1, link2) = await urlStream.first;
+
       whatsappLink = link1;
       telegramLink = link2;
+      urlStream.listen((event) {
+        whatsappLink = event.$1;
+        telegramLink = event.$2;
+      });
     } catch (e) {
       log(e.toString());
     }

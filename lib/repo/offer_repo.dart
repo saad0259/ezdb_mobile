@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../models/offer_model.dart';
 import 'api_helper.dart';
+import 'repo_constants.dart';
 
 class OfferRepo {
   static final OfferRepo instance = OfferRepo();

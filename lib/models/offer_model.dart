@@ -4,7 +4,6 @@ class OfferModel {
   int price;
   int days;
   bool isActive;
-  bool isFreeTrial;
 
   OfferModel({
     required this.uid,
@@ -12,16 +11,16 @@ class OfferModel {
     required this.price,
     required this.days,
     required this.isActive,
-    required this.isFreeTrial,
   });
+
+  bool get isFreeTrial => price == 0;
 
   OfferModel.fromMap(Map<String, dynamic> data)
       : uid = data['id'].toString(),
         name = data['name'] ?? '',
         price = int.tryParse(data['price'].toString()) ?? 0,
         days = int.tryParse(data['days'].toString()) ?? 0,
-        isActive = data['isActive'] ?? false,
-        isFreeTrial = data['isFreeTrial'] ?? false;
+        isActive = data['isActive'] ?? false;
 
   Map<String, dynamic> toMap() {
     return {

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import '../models/user.dart';
 import 'api_helper.dart';
+import 'repo_constants.dart';
 
 class AuthRepo {
   static final AuthRepo instance = AuthRepo();
