@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import '../models/user.dart';
+import '../utils/prefs.dart';
 import 'api_helper.dart';
 import 'repo_constants.dart';
 
@@ -164,6 +165,7 @@ class AuthRepo {
 
   Future<UserModel?> getUserById(String id) async {
     return executeSafely(() async {
+      final String token = await prefs.authToken.load() ?? '';
       final Request request = Request('${usersPath}/$id', null);
       final Response response = await request.get(baseUrl);
 

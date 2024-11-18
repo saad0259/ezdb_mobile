@@ -59,26 +59,26 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   }
 
   Future<void> _fetchPage(int pageKey) async {
-    try {
-      final AuthState authState =
-          Provider.of<AuthState>(context, listen: false);
+    // try {
+    //   final AuthState authState =
+    //       Provider.of<AuthState>(context, listen: false);
 
-      final HomeState homeState =
-          Provider.of<HomeState>(context, listen: false);
-      homeState.currentPage = pageKey;
-      final List<MemberModel> newItems =
-          await homeState.searchMembers(authState.user!.id);
+    //   final HomeState homeState =
+    //       Provider.of<HomeState>(context, listen: false);
+    //   homeState.currentPage = pageKey;
+    //   final List<MemberModel> newItems =
+    //       await homeState.searchMembers(authState.user!.id);
 
-      final isLastPage = newItems.length < homeState.currentPage;
-      if (isLastPage) {
-        _pagingController.appendLastPage(newItems);
-      } else {
-        final nextPageKey = pageKey + 1;
-        _pagingController.appendPage(newItems, nextPageKey);
-      }
-    } catch (error) {
-      _pagingController.error = error;
-    }
+    //   final isLastPage = newItems.length < homeState.currentPage;
+    //   if (isLastPage) {
+    //     _pagingController.appendLastPage(newItems);
+    //   } else {
+    //     final nextPageKey = pageKey + 1;
+    //     _pagingController.appendPage(newItems, nextPageKey);
+    //   }
+    // } catch (error) {
+    //   _pagingController.error = error;
+    // }
   }
 
   @override

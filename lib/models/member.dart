@@ -23,10 +23,11 @@ class MemberModel {
     return MemberModel(
       id: data['id'] ?? 0,
       name: data['name'] ?? 'N/A',
-      ic: data['ic'] ?? 'N/A',
-      tel1: data['tel1'] ?? 'N/A',
-      tel2: data['tel2'] ?? 'N/A',
-      tel3: data['tel3'] ?? 'N/A',
+      ic: data['ic'] ?? '',
+      // ic: (['123456', '7890121']..shuffle()).first,
+      tel1: data['tel1'] ?? '',
+      tel2: data['tel2'] ?? '',
+      tel3: data['tel3'] ?? '',
       postcode: data['postcode'] ?? '',
       address: data['address'] ?? 'N/A',
     );

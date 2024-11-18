@@ -52,50 +52,58 @@ class MemberWidget extends StatelessWidget {
         padding: const EdgeInsets.all(15),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  member.name,
-                  textAlign: TextAlign.end,
-                  style: Theme.of(context).textTheme.titleMedium,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+            SizedBox(
+              // width: context.width * 0.3,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      member.name,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  children: [
-                    Icon(Icons.info),
-                    const SizedBox(width: 10),
-                    Text(
-                      member.ic,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(color: Colors.grey),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Icon(Icons.phone),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      member.tel1,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(color: Colors.grey),
-                    ),
-                  ],
-                ),
+                if (member.ic.isNotEmpty)
+                  Row(
+                    children: [
+                      const SizedBox(width: 35),
+                      Icon(Icons.info),
+                      const SizedBox(width: 10),
+                      Text(
+                        member.ic,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                if (member.tel1.isNotEmpty)
+                  Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(width: 35),
+                      Icon(Icons.phone),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        member.tel1,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.copyWith(color: Colors.grey),
+                      ),
+                    ],
+                  ),
               ],
             ),
             const SizedBox(height: 10),

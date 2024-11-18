@@ -200,7 +200,9 @@ class SearchForm extends StatelessWidget {
                   homeState.searchValue = value;
                 },
                 decoration: InputDecoration(
-                  hintText: 'Enter ${homeState.searchType.name.toLowerCase()}',
+                  hintText: homeState.searchType == SearchType.address
+                      ? '11 JALAN PJS 8/9'
+                      : 'Enter ${homeState.searchType.name.toLowerCase()}',
                   fillColor: Colors.white,
                   filled: true,
                   border: OutlineInputBorder(
@@ -219,7 +221,7 @@ class SearchForm extends StatelessWidget {
                     homeState.postcode = value;
                   },
                   decoration: const InputDecoration(
-                    hintText: 'Postcode',
+                    hintText: '46150',
                     fillColor: Colors.white,
                     filled: true,
                     border: OutlineInputBorder(

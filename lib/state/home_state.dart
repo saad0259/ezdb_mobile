@@ -41,7 +41,11 @@ class HomeState extends ChangeNotifier {
   String postcode = '';
 
   List<MemberModel> _members = [];
-  List<MemberModel> get members => _members;
+  List<MemberModel> get members {
+    //sort by ic
+    _members.sort((a, b) => a.ic.compareTo(b.ic));
+    return _members;
+  }
 
   set members(List<MemberModel> value) {
     _members = value;

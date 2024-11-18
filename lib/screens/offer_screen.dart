@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../models/offer_model.dart';
@@ -41,60 +42,97 @@ class PriceScreen extends StatelessWidget {
           firstChild: shimmerTableEffect(),
           secondChild: Column(
             children: [
+              MembershipDetails(),
               // OffersListWidget(offers: offers),
               OfferListWidget(offerList: offerList, doPop: false),
               const SizedBox(height: 20.0),
+
+              //contact us button with whatsapp link
               ElevatedButton(
                 onPressed: () async {
                   try {
-                    await showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                              title: const Text('Contact Us'),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (offerState.whatsappLink.isNotEmpty)
-                                    ListTile(
-                                      leading: const Icon(Icons.message),
-                                      title: const Text('WhatsApp Us'),
-                                      onTap: () async {
-                                        try {
-                                          log('whatsapp link: ' +
-                                              offerState.whatsappLink);
-                                          await customLaunch(
-                                              offerState.whatsappLink);
-                                        } catch (e) {
-                                          snack(context, e.toString());
-                                        }
-                                      },
-                                    ),
-                                  if (offerState.telegramLink.isNotEmpty)
-                                    ListTile(
-                                      leading: const Icon(Icons.message),
-                                      title: const Text('Telegram Us'),
-                                      onTap: () async {
-                                        try {
-                                          await customLaunch(
-                                              offerState.telegramLink);
-                                        } catch (e) {
-                                          snack(context, e.toString());
-                                        }
-                                      },
-                                    ),
-                                ],
-                              ),
-                            ));
+                    log('whatsapp link: ' + offerState.whatsappLink);
+                    await customLaunch(offerState.whatsappLink);
                   } catch (e) {
                     snack(context, e.toString());
                   }
                 },
                 child: const Text('Contact Us'),
               ),
+
+              // const SizedBox(height: 20.0),
+
+              // ElevatedButton(
+              //   onPressed: () async {
+              //     try {
+              //       await showDialog(
+              //           context: context,
+              //           builder: (context) => AlertDialog(
+              //                 title: const Text('Contact Us'),
+              //                 content: Column(
+              //                   mainAxisSize: MainAxisSize.min,
+              //                   children: [
+              //                     if (offerState.whatsappLink.isNotEmpty)
+              //                       ListTile(
+              //                         leading: const Icon(Icons.message),
+              //                         title: const Text('WhatsApp Us'),
+              //                         onTap: () async {
+              //                           try {
+              //                             log('whatsapp link: ' +
+              //                                 offerState.whatsappLink);
+              //                             await customLaunch(
+              //                                 offerState.whatsappLink);
+              //                           } catch (e) {
+              //                             snack(context, e.toString());
+              //                           }
+              //                         },
+              //                       ),
+              //                     if (offerState.telegramLink.isNotEmpty)
+              //                       ListTile(
+              //                         leading: const Icon(Icons.message),
+              //                         title: const Text('Telegram Us'),
+              //                         onTap: () async {
+              //                           try {
+              //                             await customLaunch(
+              //                                 offerState.telegramLink);
+              //                           } catch (e) {
+              //                             snack(context, e.toString());
+              //                           }
+              //                         },
+              //                       ),
+              //                   ],
+              //                 ),
+              //               ));
+              //     } catch (e) {
+              //       snack(context, e.toString());
+              //     }
+              //   },
+              //   child: const Text('Contact Us'),
+              // ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class MembershipDetails extends StatelessWidget {
+  const MembershipDetails({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final AuthState authState = Provider.of<AuthState>(context);
+    final DateTime expiry = authState.user?.memberShipExpiry ?? DateTime.now();
+
+    final bool isExpired = expiry.isBefore(DateTime.now());
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('Membership Status: ${isExpired ? 'Expired' : 'Active'}'),
+        Text(
+            'Membership Expiry : ${DateFormat('MMM d, y').format(expiry)} ${isExpired ? '(Expired)' : '(${expiry.difference(DateTime.now()).inDays + 1} Days Left)'}'),
+      ].expand((element) => [element, const SizedBox(height: 12)]).toList(),
     );
   }
 }

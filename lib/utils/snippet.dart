@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'dart:math' as math;
 
 // import 'package:beamer/beamer.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
@@ -257,18 +257,18 @@ void getStickyLoader(context) async {
   );
 }
 
-Widget getErrorMessage(BuildContext context, e) {
-  debugPrint(e);
+// Widget getErrorMessage(BuildContext context, e) {
+//   debugPrint(e);
 
-  return Center(
-    child: Text(
-      e is FirebaseException ? e.message ?? e.code : e,
-      style:
-          Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.red),
-      textAlign: TextAlign.center,
-    ),
-  );
-}
+//   return Center(
+//     child: Text(
+//       e is FirebaseException ? e.message ?? e.code : e,
+//       style:
+//           Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.red),
+//       textAlign: TextAlign.center,
+//     ),
+//   );
+// }
 
 Widget getShimmer({
   Color? baseColor,
@@ -424,10 +424,10 @@ Shimmer shimmerDashboardEffect() {
 //   return null;
 // }
 
-Widget getFirebaseError(BuildContext context, error) {
-  return getErrorMessage(context,
-      error is FirebaseException ? error.message ?? error.code : '$error');
-}
+// Widget getFirebaseError(BuildContext context, error) {
+//   return getErrorMessage(context,
+//       error is FirebaseException ? error.message ?? error.code : '$error');
+// }
 
 bool isKeyboardOpen(BuildContext context) =>
     MediaQuery.of(context).viewInsets.bottom != 0;

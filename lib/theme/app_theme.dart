@@ -40,14 +40,14 @@ ThemeData getTheme() {
     inputDecorationTheme: getInputDecorationTheme(),
     dropdownMenuTheme: DropdownMenuThemeData(
       menuStyle: MenuStyle(
-        surfaceTintColor: MaterialStateProperty.all(Colors.white),
-        backgroundColor: MaterialStateProperty.all(Colors.white),
-        side: MaterialStateProperty.all(
+        surfaceTintColor: WidgetStateProperty.all(Colors.white),
+        backgroundColor: WidgetStateProperty.all(Colors.white),
+        side: WidgetStateProperty.all(
           const BorderSide(
             color: Colors.transparent,
           ),
         ),
-        shape: MaterialStateProperty.all(
+        shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),

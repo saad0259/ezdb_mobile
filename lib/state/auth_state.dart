@@ -37,21 +37,7 @@ class AuthState extends ChangeNotifier {
   Future<void> login(String phone, String password) async {
     try {
       String fcmToken = 'abc';
-      try {
-        //apns token
-        if (Platform.isIOS) {
-          final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
-          if (apnsToken != null) {
-            fcmToken = apnsToken.toString();
-          }
-        } else {
-          fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
-        }
-        debugPrint('fcm token: $fcmToken');
-        log('fcm token: $fcmToken');
-      } catch (e) {
-        log('fcm error: $e');
-      }
+      fcmToken = await _getFCMToken(fcmToken);
 
       final UserModel? userdata = await AuthRepo.instance
           .signIn(phone: phone, password: password, fcmToken: fcmToken);
@@ -65,13 +51,36 @@ class AuthState extends ChangeNotifier {
     }
   }
 
+  Future<String> _getFCMToken(String fcmToken) async {
+    try {
+      //apns token
+      if (Platform.isIOS) {
+        final apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+        if (apnsToken != null) {
+          fcmToken = apnsToken.toString();
+        }
+      } else {
+        fcmToken = await FirebaseMessaging.instance.getToken() ?? '';
+      }
+      debugPrint('fcm token: $fcmToken');
+      log('fcm token: $fcmToken');
+    } catch (e) {
+      log('fcm error: $e');
+    }
+    return fcmToken;
+  }
+
   Future<void> verifyOtp(String phone, String otp) async {
     try {
+      String fcmToken = 'abc';
+      fcmToken = await _getFCMToken(fcmToken);
+
       final UserModel? userdata = await AuthRepo.instance.verifyOtp(phone, otp);
       user = userdata;
 
       await prefs.authToken.save(user?.token ?? '');
       await prefs.userId.save(user?.id.toString());
+      await prefs.fcmToken.save(fcmToken);
     } catch (e) {
       rethrow;
     }
