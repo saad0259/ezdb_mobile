@@ -26,7 +26,7 @@ class HomeState extends ChangeNotifier {
 
   int _pageSize = 10;
   int get pageSize => _pageSize;
-  set pageSize(int value) {
+  set pageSize(int value) { 
     _pageSize = value;
     notifyListeners();
   }
@@ -51,7 +51,7 @@ class HomeState extends ChangeNotifier {
     _members = value;
     notifyListeners();
   }
-
+ 
   void setSearchType(SearchType value) {
     searchType = value;
     members = [];
